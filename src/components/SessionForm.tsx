@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { Exercise, ExerciseLog, Session, Side, Swelling } from "@/lib/types";
+import type { Exercise, ExerciseLog, Session, SessionType, Side, Swelling } from "@/lib/types";
+import { unitLabel } from "@/lib/types";
+import { todayIso } from "@/lib/calc";
 import { newId } from "@/lib/useLocalStorage";
 import { Button, Card, Field, Select, TextInput } from "@/components/ui";
 
@@ -9,15 +11,13 @@ function emptySet() {
   return { id: newId(), reps: 0, weight: 0, side: "both" as Side };
 }
 
-function todayIso() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export default function SessionForm({
   exercises,
+  type,
   onSave,
 }: {
   exercises: Exercise[];
+  type: SessionType;
   onSave: (session: Session) => void;
 }) {
   const [date, setDate] = useState(todayIso());
@@ -75,6 +75,7 @@ export default function SessionForm({
       pain,
       swelling,
       notes: notes.trim() || undefined,
+      type,
     });
   }
 
@@ -83,6 +84,12 @@ export default function SessionForm({
       <Field label="Date">
         <TextInput type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
       </Field>
+
+      {type === "rest" && (
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          Rest day — no exercises to log. Just note how the knee feels below.
+        </p>
+      )}
 
       {logs.map((log) => {
         const exercise = exercises.find((e) => e.id === log.exerciseId);
@@ -100,9 +107,16 @@ export default function SessionForm({
             </div>
             {exercise && (
               <p className="mb-2 text-xs text-zinc-500 dark:text-zinc-400">
-                Target: {exercise.defaultSets} × {exercise.defaultReps}{" "}
-                {exercise.unit === "seconds" ? "s" : "reps"}
+                Target: {exercise.defaultSets} × {exercise.defaultReps} {unitLabel(exercise.unit)}
               </p>
+            )}
+            {exercise?.howTo && (
+              <details className="mb-2">
+                <summary className="cursor-pointer text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                  How to
+                </summary>
+                <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{exercise.howTo}</p>
+              </details>
             )}
             <div className="flex flex-col gap-2">
               {log.sets.map((set, idx) => (
@@ -113,7 +127,7 @@ export default function SessionForm({
                     min={0}
                     value={set.reps}
                     onChange={(e) => updateSet(log.exerciseId, set.id, { reps: Number(e.target.value) })}
-                    placeholder={exercise?.unit === "seconds" ? "sec" : "reps"}
+                    placeholder={exercise ? unitLabel(exercise.unit) : "reps"}
                     className="w-16"
                   />
                   <TextInput

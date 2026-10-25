@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useExercises } from "@/lib/store";
-import type { Exercise } from "@/lib/types";
+import { exerciseCategory } from "@/lib/calc";
+import { unitLabel, type Exercise } from "@/lib/types";
 import ExerciseForm from "@/components/ExerciseForm";
 import { Button, Card, PageTitle } from "@/components/ui";
 
@@ -79,11 +80,30 @@ export default function PlanPage() {
             <Card key={ex.id}>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-medium">{ex.name}</p>
+                  <div className="flex flex-wrap items-start gap-1.5">
+                    <p className="font-medium">{ex.name}</p>
+                    <span
+                      className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                        exerciseCategory(ex) === "recovery"
+                          ? "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300"
+                          : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
+                      }`}
+                    >
+                      {exerciseCategory(ex) === "recovery" ? "Recovery" : "Strength"}
+                    </span>
+                  </div>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    {ex.defaultSets} × {ex.defaultReps} {ex.unit === "seconds" ? "s" : "reps"}
+                    {ex.defaultSets} × {ex.defaultReps} {unitLabel(ex.unit)}
                   </p>
                   {ex.notes && <p className="mt-0.5 text-xs text-zinc-400">{ex.notes}</p>}
+                  {ex.howTo && (
+                    <details className="mt-1">
+                      <summary className="cursor-pointer text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                        How to
+                      </summary>
+                      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{ex.howTo}</p>
+                    </details>
+                  )}
                 </div>
                 <div className="flex shrink-0 gap-1">
                   <button

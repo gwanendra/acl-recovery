@@ -3,8 +3,21 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSessions } from "@/lib/store";
-import { logLoad, shouldWarn } from "@/lib/calc";
+import { logLoad, sessionType, shouldWarn } from "@/lib/calc";
+import type { SessionType } from "@/lib/types";
 import { Button, Card, PageTitle } from "@/components/ui";
+
+const TYPE_LABEL: Record<SessionType, string> = {
+  train: "Train",
+  recovery: "Recovery",
+  rest: "Rest",
+};
+
+const TYPE_BADGE_CLASS: Record<SessionType, string> = {
+  train: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+  recovery: "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300",
+  rest: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300",
+};
 
 export default function LogPage() {
   const [sessions, setSessions, hydrated] = useSessions();
@@ -34,6 +47,7 @@ export default function LogPage() {
           {sorted.map((session) => {
             const open = expanded === session.id;
             const warn = shouldWarn(session.pain, session.swelling);
+            const type = sessionType(session);
             return (
               <Card key={session.id}>
                 <button
@@ -41,10 +55,18 @@ export default function LogPage() {
                   onClick={() => setExpanded(open ? null : session.id)}
                 >
                   <div>
-                    <p className="font-medium">{session.date}</p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="font-medium">{session.date}</p>
+                      <span
+                        className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${TYPE_BADGE_CLASS[type]}`}
+                      >
+                        {TYPE_LABEL[type]}
+                      </span>
+                    </div>
                     <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                      {session.exercises.length} exercise{session.exercises.length === 1 ? "" : "s"} · pain{" "}
-                      {session.pain}/10 · swelling {session.swelling}
+                      {type === "rest"
+                        ? `pain ${session.pain}/10`
+                        : `${session.exercises.length} exercise${session.exercises.length === 1 ? "" : "s"} · pain ${session.pain}/10 · swelling ${session.swelling}`}
                     </p>
                   </div>
                   {warn && (

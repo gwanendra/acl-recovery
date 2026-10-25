@@ -1,4 +1,47 @@
-import type { ExerciseLog, Session, SetEntry } from "./types";
+import type { Exercise, ExerciseCategory, ExerciseLog, Session, SessionType, SetEntry } from "./types";
+
+export function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export function exerciseCategory(exercise: Exercise): ExerciseCategory {
+  return exercise.category ?? "strength";
+}
+
+// "train"/"recovery" day modes map to "strength"/"recovery" exercise categories —
+// the names differ (a session you log vs. an exercise you file), don't compare them directly.
+export function categoryForMode(mode: "train" | "recovery"): ExerciseCategory {
+  return mode === "train" ? "strength" : "recovery";
+}
+
+export function sessionType(session: Session): SessionType {
+  return session.type ?? "train";
+}
+
+// Alternates train <-> recovery based on the most recently logged session,
+// so a hard training day is always followed by a suggested light day.
+export function suggestedMode(sessions: Session[]): "train" | "recovery" {
+  if (sessions.length === 0) return "train";
+  const latest = sessions.slice().sort((a, b) => b.date.localeCompare(a.date))[0];
+  return sessionType(latest) === "train" ? "recovery" : "train";
+}
+
+// Consecutive days (ending today, or yesterday if today isn't logged yet)
+// with any session logged — train, recovery, or rest all count as "showed up".
+export function currentStreak(sessions: Session[], today: string = todayIso()): number {
+  const dates = new Set(sessions.map((s) => s.date));
+  if (dates.size === 0) return 0;
+
+  const cursor = new Date(`${today}T00:00:00`);
+  if (!dates.has(today)) cursor.setDate(cursor.getDate() - 1);
+
+  let streak = 0;
+  while (dates.has(cursor.toISOString().slice(0, 10))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
 
 // Load proxy for a single set: weighted sets use reps*weight, bodyweight sets use reps.
 export function setLoad(set: SetEntry): number {

@@ -1,6 +1,14 @@
 export type Side = "injured" | "healthy" | "both";
 export type Swelling = "none" | "mild" | "moderate";
-export type Unit = "reps" | "seconds";
+export type Unit = "reps" | "seconds" | "minutes";
+export type ExerciseCategory = "strength" | "recovery";
+export type SessionType = "train" | "recovery" | "rest";
+
+export function unitLabel(unit: Unit): string {
+  if (unit === "seconds") return "s";
+  if (unit === "minutes") return "min";
+  return "reps";
+}
 
 export interface Exercise {
   id: string;
@@ -10,6 +18,8 @@ export interface Exercise {
   unit: Unit;
   notes?: string;
   archived?: boolean;
+  category?: ExerciseCategory; // missing = "strength", for exercises saved before this field existed
+  howTo?: string; // short how-to-do-it / form cue, shown as a collapsible tip
 }
 
 export interface SetEntry {
@@ -33,6 +43,7 @@ export interface Session {
   pain: number; // 0-10
   swelling: Swelling;
   notes?: string;
+  type?: SessionType; // missing = "train", for sessions logged before this field existed
 }
 
 export interface ReadinessState {
