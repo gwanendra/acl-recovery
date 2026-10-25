@@ -36,15 +36,20 @@ export default function SessionForm({
   onSave: (session: Session) => void;
 }) {
   const [date, setDate] = useState(todayIso());
+  // Starts at one row per exercise regardless of defaultSets — filling in
+  // every set up front was the biggest source of form fatigue. "+ Add set"
+  // covers anyone who actually wants to log more than one set.
   const [logs, setLogs] = useState<ExerciseLog[]>(
     exercises.map((ex) => {
-      const lastSets = lastLoggedSets(ex.id, sessions);
+      const prefill = lastLoggedSets(ex.id, sessions)?.[0];
       return {
         exerciseId: ex.id,
         exerciseName: ex.name,
-        sets: lastSets
-          ? lastSets.map((s) => ({ id: newId(), reps: s.reps, weight: s.weight, side: s.side }))
-          : Array.from({ length: ex.defaultSets }, emptySet),
+        sets: [
+          prefill
+            ? { id: newId(), reps: prefill.reps, weight: prefill.weight, side: prefill.side }
+            : emptySet(),
+        ],
       };
     })
   );
