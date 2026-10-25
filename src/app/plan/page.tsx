@@ -1,0 +1,120 @@
+"use client";
+
+import { useState } from "react";
+import { useExercises } from "@/lib/store";
+import type { Exercise } from "@/lib/types";
+import ExerciseForm from "@/components/ExerciseForm";
+import { Button, Card, PageTitle } from "@/components/ui";
+
+export default function PlanPage() {
+  const [exercises, setExercises, hydrated] = useExercises();
+  const [editing, setEditing] = useState<Exercise | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
+
+  if (!hydrated) return <p className="text-sm text-zinc-400">Loading…</p>;
+
+  const visible = exercises.filter((e) => (showArchived ? e.archived : !e.archived));
+
+  function saveExercise(exercise: Exercise) {
+    setExercises((prev) => {
+      const exists = prev.some((e) => e.id === exercise.id);
+      return exists ? prev.map((e) => (e.id === exercise.id ? exercise : e)) : [...prev, exercise];
+    });
+    setEditing(null);
+    setAdding(false);
+  }
+
+  function toggleArchive(id: string) {
+    setExercises((prev) =>
+      prev.map((e) => (e.id === id ? { ...e, archived: !e.archived } : e))
+    );
+  }
+
+  function removeExercise(id: string) {
+    if (!confirm("Delete this exercise? Past session logs will keep their recorded name.")) return;
+    setExercises((prev) => prev.filter((e) => e.id !== id));
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <PageTitle title="Exercise library" subtitle="Edit sets, reps, and weight to match your physio's plan" />
+
+      {adding && (
+        <Card>
+          <h2 className="mb-3 text-sm font-semibold">New exercise</h2>
+          <ExerciseForm onSave={saveExercise} onCancel={() => setAdding(false)} />
+        </Card>
+      )}
+
+      {!adding && (
+        <Button onClick={() => setAdding(true)} className="w-full">
+          + Add exercise
+        </Button>
+      )}
+
+      <div className="flex gap-2 text-xs">
+        <button
+          onClick={() => setShowArchived(false)}
+          className={`rounded-full px-3 py-1 ${!showArchived ? "bg-emerald-600 text-white" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"}`}
+        >
+          Active
+        </button>
+        <button
+          onClick={() => setShowArchived(true)}
+          className={`rounded-full px-3 py-1 ${showArchived ? "bg-emerald-600 text-white" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"}`}
+        >
+          Archived
+        </button>
+      </div>
+
+      <ul className="flex flex-col gap-2">
+        {visible.map((ex) =>
+          editing?.id === ex.id ? (
+            <Card key={ex.id}>
+              <h2 className="mb-3 text-sm font-semibold">Edit exercise</h2>
+              <ExerciseForm initial={ex} onSave={saveExercise} onCancel={() => setEditing(null)} />
+            </Card>
+          ) : (
+            <Card key={ex.id}>
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-medium">{ex.name}</p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    {ex.defaultSets} × {ex.defaultReps} {ex.unit === "seconds" ? "s" : "reps"}
+                  </p>
+                  {ex.notes && <p className="mt-0.5 text-xs text-zinc-400">{ex.notes}</p>}
+                </div>
+                <div className="flex shrink-0 gap-1">
+                  <button
+                    onClick={() => setEditing(ex)}
+                    className="rounded-md px-2 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => toggleArchive(ex.id)}
+                    className="rounded-md px-2 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  >
+                    {ex.archived ? "Restore" : "Archive"}
+                  </button>
+                  <button
+                    onClick={() => removeExercise(ex.id)}
+                    className="rounded-md px-2 py-1 text-xs font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </Card>
+          )
+        )}
+        {visible.length === 0 && (
+          <p className="py-6 text-center text-sm text-zinc-400">
+            {showArchived ? "No archived exercises." : "No exercises — add one above."}
+          </p>
+        )}
+      </ul>
+    </div>
+  );
+}
