@@ -163,6 +163,18 @@ export default function Home() {
         )}
       </Card>
 
+      {todaySession ? (
+        <Link href="/log">
+          <Button variant="secondary" className="w-full py-3 text-base">
+            View today&apos;s log
+          </Button>
+        </Link>
+      ) : (
+        <Link href={`/log/new?type=${mode}`}>
+          <Button className="w-full py-3 text-base">{CTA_LABEL[mode]}</Button>
+        </Link>
+      )}
+
       <div className="grid grid-cols-2 gap-3">
         <Link href="/progress">
           <Card className="h-full">
@@ -232,18 +244,6 @@ export default function Home() {
             </ul>
           )}
         </>
-      )}
-
-      {todaySession ? (
-        <Link href="/log">
-          <Button variant="secondary" className="mt-2 w-full py-3 text-base">
-            View today&apos;s log
-          </Button>
-        </Link>
-      ) : (
-        <Link href={`/log/new?type=${mode}`}>
-          <Button className="mt-2 w-full py-3 text-base">{CTA_LABEL[mode]}</Button>
-        </Link>
       )}
     </div>
   );

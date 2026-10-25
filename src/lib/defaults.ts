@@ -97,6 +97,45 @@ export const DEFAULT_EXERCISES: Exercise[] = [
       "Side plank on your forearm, knees straight, hips stacked. Lift your top leg up and down without letting your hips sag or rotate. Drop to your knees if a full plank is too hard to hold with good form.",
   },
   {
+    id: "hip-abductor-machine",
+    name: "Hip abductor machine",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    unit: "reps",
+    category: "strength",
+    section: "core",
+    variantGroup: "glute-activation",
+    notes: "Glute medius with real resistance — a gym alternative to the band version",
+    howTo:
+      "Sit with the pads against the outside of your knees. Push your legs apart against the resistance, pause briefly, then control the return — don't let the stack slam back.",
+  },
+  {
+    id: "hip-adductor-machine",
+    name: "Hip adductor machine",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    unit: "reps",
+    category: "strength",
+    section: "core",
+    variantGroup: "adductor-work",
+    notes: "Inner thigh and groin — often skipped, but matters for knee stability",
+    howTo:
+      "Sit with the pads against the inside of your knees, legs started apart. Squeeze your legs together against the resistance, pause, then let them open back out under control.",
+  },
+  {
+    id: "ball-squeeze-adductor",
+    name: "Ball squeeze (adductor)",
+    defaultSets: 3,
+    defaultReps: "10-15",
+    unit: "seconds",
+    category: "strength",
+    section: "core",
+    variantGroup: "adductor-work",
+    notes: "No machine needed — a ball, pillow, or rolled towel works",
+    howTo:
+      "Lying or seated, place a ball (or pillow/rolled towel) between your knees. Squeeze and hold, feeling your inner thighs engage, then release slowly.",
+  },
+  {
     id: "pallof-press",
     name: "Pallof press",
     defaultSets: 3,
@@ -187,6 +226,18 @@ export const DEFAULT_EXERCISES: Exercise[] = [
       "Seat set so your knee bends to about 90°. Press through your whole foot, not just your toes. Control the way back down — don't let the weight stack slam.",
   },
   {
+    id: "hack-squat-machine",
+    name: "Hack squat (machine)",
+    defaultSets: 3,
+    defaultReps: "8-12",
+    unit: "reps",
+    category: "strength",
+    section: "main",
+    notes: "Bilateral quad compound, on the 45° sled",
+    howTo:
+      "Shoulders under the pads, feet shoulder-width on the platform (a bit forward for more quad emphasis). Lower under control until your thighs are near parallel, then drive through your whole foot back up. Keep your lower back flat against the pad — don't let your hips round at the bottom.",
+  },
+  {
     id: "wall-sit",
     name: "Wall sit",
     defaultSets: 3,
@@ -226,6 +277,18 @@ export const DEFAULT_EXERCISES: Exercise[] = [
       "Kneel on a pad with your ankles locked down (partner holds them, or use a Nordic bench/strap). Keeping your hips straight, lower your torso forward as slowly as you can control using your hamstrings, then push back up. Most people can only lower a little before losing control at first — that's normal, don't force the full range.",
   },
   {
+    id: "leg-extension-machine",
+    name: "Leg extension (machine)",
+    defaultSets: 3,
+    defaultReps: "12-15",
+    unit: "reps",
+    category: "strength",
+    section: "finisher",
+    notes: "Quad isolation — start light, no need to rush the load",
+    howTo:
+      "Pad set just above your ankles, back against the seat. Extend your knees to full extension without slamming or kicking the last few degrees, pause briefly at the top, then lower slowly. Start lighter than you think — this one can aggravate the knee if you rush it.",
+  },
+  {
     id: "standing-calf-raise",
     name: "Standing calf raise",
     defaultSets: 3,
@@ -247,9 +310,9 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     category: "strength",
     section: "finisher",
     variantGroup: "calf-raise",
-    notes: "Same movement as the bodyweight version, with added load",
+    notes: "Straight-knee — hits the gastrocnemius, with added load",
     howTo:
-      "Shoulders under the pads, rise onto your toes as high as you can, pause at the top, then lower under control past parallel for a full stretch at the bottom.",
+      "Shoulders under the pads, balls of your feet on the platform edge, rise onto your toes as high as you can (that's your gastrocnemius — the visible calf muscle — doing the work), pause at the top, then lower under control past parallel for a full stretch at the bottom.",
   },
   {
     id: "leg-press-calf-raise",
