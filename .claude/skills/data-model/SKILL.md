@@ -92,4 +92,4 @@ elsewhere.
 - `src/app/log/page.tsx` — session history
 - `src/app/plan/page.tsx` — exercise library (`ExerciseForm`)
 - `src/app/progress/page.tsx` — charts (recharts)
-- `src/app/readiness/page.tsx` — Phase 4 readiness checklist
+- `src/app/readiness/page.tsx` — readiness checklist (see `[[change-phase-label]]` — no phase numbering in copy)

@@ -1,11 +1,11 @@
 ---
 name: add-readiness-criterion
-description: Add, remove, or reword one of the Phase 4 readiness checklist items shown on the /readiness page and summarized on the home screen.
+description: Add, remove, or reword one of the readiness checklist items shown on the /readiness page and summarized on the home screen.
 ---
 
 # Changing the readiness checklist
 
-The Phase 4 readiness checklist is driven entirely by one array —
+The readiness checklist (no phase numbering — see `[[change-phase-label]]`) is driven entirely by one array —
 `READINESS_ITEMS` in `src/lib/types.ts`:
 
 ```ts
