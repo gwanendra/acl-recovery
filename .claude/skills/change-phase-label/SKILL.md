@@ -1,31 +1,29 @@
 ---
 name: change-phase-label
-description: Update which recovery phase the app displays (currently hardcoded to Phase 3 → Phase 4). Use when the user has progressed phases and wants the app's text relabeled.
+description: The app intentionally dropped clinical "Phase 3/Phase 4" framing in favor of plain Train/Recovery/Rest language. Read before reintroducing phase numbers, clinical copy, or PT-reporting framing anywhere in the UI.
 ---
 
-# Changing the displayed phase
+# No more "Phase 3 / Phase 4" framing — read this before adding it back
 
-The app is currently hard-coded for one specific transition: **"currently in
-Phase 3, working toward Phase 4."** There's no settings page or stored phase
-number — it's plain text in a few places. Update all of them together so the
-app stays internally consistent:
+Earlier versions of this app hardcoded "Phase 3 → Phase 4" copy in five
+places (`layout.tsx` title, home `PageTitle` subtitle, home readiness tile,
+`/readiness` title, `/readiness` all-met banner). That copy has been removed
+— see `[[acl-app-purpose]]` (project memory): the user explicitly said this
+app is not a clinical rehab tracker or a return-to-sport protocol, it's a
+personal discipline/consistency tool they open before a gym session. Phase
+numbers, PT-progression language, and diary-style reporting don't fit that.
 
-| File | Line context | What it says |
-|---|---|---|
-| `src/app/layout.tsx` | `metadata.title` | `"ACL Phase 3 Tracker"` |
-| `src/app/page.tsx` | `PageTitle subtitle` | `"Phase 3 — Strength & control"` |
-| `src/app/page.tsx` | readiness tile label | `"Phase 4 readiness"` |
-| `src/app/readiness/page.tsx` | `PageTitle title` | `"Phase 4 readiness"` |
-| `src/app/readiness/page.tsx` | all-met banner text | `"All Phase 3 criteria checked... toward Phase 4..."` |
+**Current state:**
+- App title/metadata: `"Leg Day"` (`src/app/layout.tsx`).
+- Home screen has no phase subtitle — instead a rotating `HYPE_LINES` quote
+  (`src/app/page.tsx`) under the "Today" title.
+- The readiness feature still exists (`/readiness`, `READINESS_ITEMS` in
+  `src/lib/types.ts`) but is framed as optional — "Readiness check," not
+  tied to a phase number, not a prerequisite for anything in the app.
 
-Also check whether the **readiness checklist itself** (`READINESS_ITEMS` in
-`src/lib/types.ts`) still makes sense for the new target phase — those four
-criteria ("no swelling," "full ROM," "~90% strength," "pain-free jogging")
-are specifically the usual Phase 3 → Phase 4 gate. If the user is moving to a
-later phase, the checklist content likely needs to change too — see
+**If asked to add phase/milestone language back:** confirm with the user
+first — it was explicitly removed, not just outdated copy. If they do want
+it, treat it as plain text in the same handful of UI spots (no settings
+system or stored "phase" value to wire up), and check whether
+`READINESS_ITEMS` still makes sense for whatever phase they name — see
 `[[add-readiness-criterion]]`.
-
-Don't invent a generic "phase" config/variable unless asked — this app has
-no settings system, and the phase name only ever appears as plain copy in a
-handful of places. A find-and-replace across the table above is the whole
-job.

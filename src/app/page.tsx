@@ -1,18 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useExercises, useReadiness, useSessions } from "@/lib/store";
 import {
   categoryForMode,
   currentStreak,
   exerciseCategory,
+  exerciseSection,
   latestSymmetry,
+  pickDailyExercises,
   sessionType,
   suggestedMode,
   todayIso,
 } from "@/lib/calc";
-import { READINESS_ITEMS, unitLabel, type SessionType } from "@/lib/types";
+import {
+  READINESS_ITEMS,
+  SECTION_LABEL,
+  SECTION_ORDER,
+  unitLabel,
+  type Exercise,
+  type SessionType,
+} from "@/lib/types";
 import WarningBanner from "@/components/WarningBanner";
 import { Button, Card, PageTitle } from "@/components/ui";
 
@@ -43,11 +52,34 @@ const LOGGED_LABEL: Record<SessionType, string> = {
   rest: "a rest day",
 };
 
+const HYPE_LINES = [
+  "Small reps, big discipline.",
+  "You showed up. That's the hard part.",
+  "One more session than last week.",
+  "This is for future you.",
+  "Consistency beats intensity.",
+  "No PR needed today — just show up.",
+  "Discipline is just self-love in boring clothes.",
+  "Nobody's grading this. Keep going anyway.",
+  "Every session is a vote for who you're becoming.",
+  "Slow is still moving forward.",
+  "You vs. yesterday's you.",
+  "Training because you love you, not to impress anyone.",
+  "Today's goal: just start.",
+  "Progress doesn't ask for permission.",
+  "Not for the sport. For you.",
+];
+
 export default function Home() {
   const [exercises, , exercisesHydrated] = useExercises();
   const [sessions, , sessionsHydrated] = useSessions();
   const [readiness, , readinessHydrated] = useReadiness();
   const [modeOverride, setModeOverride] = useState<Mode | null>(null);
+  // Picked client-side only (not during prerender) so it's a fresh random line each visit.
+  const [hypeLine, setHypeLine] = useState(HYPE_LINES[0]);
+  useEffect(() => {
+    setHypeLine(HYPE_LINES[Math.floor(Math.random() * HYPE_LINES.length)]);
+  }, []);
 
   const hydrated = exercisesHydrated && sessionsHydrated && readinessHydrated;
 
@@ -62,8 +94,22 @@ export default function Home() {
   const streak = currentStreak(sessions, today);
 
   const active = exercises.filter((e) => !e.archived);
-  const filtered =
+  const categoryFiltered =
     mode === "rest" ? [] : active.filter((ex) => exerciseCategory(ex) === categoryForMode(mode));
+  // Once today's logged, show exactly what was done — not a fresh rotation pick.
+  const filtered = todaySession
+    ? categoryFiltered.filter((ex) =>
+        todaySession.exercises.some((log) => log.exerciseId === ex.id)
+      )
+    : pickDailyExercises(categoryFiltered, sessions);
+
+  const sections: { section: (typeof SECTION_ORDER)[number]; items: Exercise[] }[] =
+    mode === "train"
+      ? SECTION_ORDER.map((section) => ({
+          section,
+          items: filtered.filter((ex) => exerciseSection(ex) === section),
+        })).filter((group) => group.items.length > 0)
+      : [];
 
   const latestSession = sessions.slice().sort((a, b) => b.date.localeCompare(a.date))[0];
   const symmetry = latestSymmetry(sessions);
@@ -71,7 +117,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-4">
-      <PageTitle title="Today" subtitle="Phase 3 — Strength & control" />
+      <PageTitle title="Today" />
+      <p className="-mt-3 text-sm italic text-zinc-400">{hypeLine}</p>
 
       <WarningBanner latestSession={latestSession} />
 
@@ -128,7 +175,7 @@ export default function Home() {
         </Link>
         <Link href="/readiness">
           <Card className="h-full">
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">Phase 4 readiness</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">Readiness check</p>
             <p className="mt-1 text-2xl font-bold">{readyCount}/{READINESS_ITEMS.length}</p>
             <p className="text-xs text-zinc-400">criteria met</p>
           </Card>
@@ -162,24 +209,25 @@ export default function Home() {
                 <Button className="mt-3">Add exercises</Button>
               </Link>
             </Card>
+          ) : mode === "train" ? (
+            <div className="flex flex-col gap-4">
+              {sections.map(({ section, items }) => (
+                <div key={section} className="flex flex-col gap-2">
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                    {SECTION_LABEL[section]}
+                  </h3>
+                  <ul className="flex flex-col gap-2">
+                    {items.map((ex) => (
+                      <ExerciseCard key={ex.id} ex={ex} />
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           ) : (
             <ul className="flex flex-col gap-2">
               {filtered.map((ex) => (
-                <Card key={ex.id}>
-                  <p className="font-medium">{ex.name}</p>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    {ex.defaultSets} × {ex.defaultReps} {unitLabel(ex.unit)}
-                  </p>
-                  {ex.notes && <p className="mt-0.5 text-xs text-zinc-400">{ex.notes}</p>}
-                  {ex.howTo && (
-                    <details className="mt-1.5">
-                      <summary className="cursor-pointer text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                        How to
-                      </summary>
-                      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{ex.howTo}</p>
-                    </details>
-                  )}
-                </Card>
+                <ExerciseCard key={ex.id} ex={ex} />
               ))}
             </ul>
           )}
@@ -198,5 +246,25 @@ export default function Home() {
         </Link>
       )}
     </div>
+  );
+}
+
+function ExerciseCard({ ex }: { ex: Exercise }) {
+  return (
+    <Card>
+      <p className="font-medium">{ex.name}</p>
+      <p className="text-xs text-zinc-500 dark:text-zinc-400">
+        {ex.defaultSets} × {ex.defaultReps} {unitLabel(ex.unit)}
+      </p>
+      {ex.notes && <p className="mt-0.5 text-xs text-zinc-400">{ex.notes}</p>}
+      {ex.howTo && (
+        <details className="mt-1.5">
+          <summary className="cursor-pointer text-xs font-medium text-emerald-600 dark:text-emerald-400">
+            How to
+          </summary>
+          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{ex.howTo}</p>
+        </details>
+      )}
+    </Card>
   );
 }

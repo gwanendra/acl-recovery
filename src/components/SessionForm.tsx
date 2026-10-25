@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import type { Exercise, ExerciseLog, Session, SessionType, Side, Swelling } from "@/lib/types";
-import { unitLabel } from "@/lib/types";
-import { todayIso } from "@/lib/calc";
+import { SECTION_LABEL, unitLabel } from "@/lib/types";
+import { exerciseSection, todayIso } from "@/lib/calc";
 import { newId } from "@/lib/useLocalStorage";
 import { Button, Card, Field, Select, TextInput } from "@/components/ui";
 
@@ -91,10 +91,20 @@ export default function SessionForm({
         </p>
       )}
 
-      {logs.map((log) => {
+      {logs.map((log, index) => {
         const exercise = exercises.find((e) => e.id === log.exerciseId);
+        const section = exercise && type === "train" ? exerciseSection(exercise) : null;
+        const prevExercise = index > 0 ? exercises.find((e) => e.id === logs[index - 1].exerciseId) : undefined;
+        const prevSection = prevExercise && type === "train" ? exerciseSection(prevExercise) : null;
+        const showSectionHeader = section !== null && section !== prevSection;
         return (
-          <Card key={log.exerciseId}>
+          <div key={log.exerciseId} className="flex flex-col gap-2">
+            {showSectionHeader && (
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                {SECTION_LABEL[section]}
+              </h3>
+            )}
+            <Card>
             <div className="mb-2 flex items-center justify-between">
               <p className="font-medium">{log.exerciseName}</p>
               <button
@@ -168,7 +178,8 @@ export default function SessionForm({
             >
               + Add set
             </button>
-          </Card>
+            </Card>
+          </div>
         );
       })}
 

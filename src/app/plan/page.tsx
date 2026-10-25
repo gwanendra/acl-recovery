@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useExercises } from "@/lib/store";
-import { exerciseCategory } from "@/lib/calc";
-import { unitLabel, type Exercise } from "@/lib/types";
+import { exerciseCategory, exerciseSection } from "@/lib/calc";
+import { SECTION_LABEL, unitLabel, type Exercise } from "@/lib/types";
 import ExerciseForm from "@/components/ExerciseForm";
 import { Button, Card, PageTitle } from "@/components/ui";
 
@@ -37,13 +37,24 @@ export default function PlanPage() {
     setExercises((prev) => prev.filter((e) => e.id !== id));
   }
 
+  // Exercises can only swap with a neighbor in the same visual group: the
+  // same section for strength exercises (so arrows stay effective now that
+  // the list is grouped by section), or anywhere within recovery.
+  function groupIdsFor(ex: Exercise): string[] {
+    return exercises
+      .filter((e) => (showArchived ? e.archived : !e.archived))
+      .filter((e) => exerciseCategory(e) === exerciseCategory(ex))
+      .filter((e) => exerciseCategory(ex) !== "strength" || exerciseSection(e) === exerciseSection(ex))
+      .map((e) => e.id);
+  }
+
   function moveExercise(id: string, direction: "up" | "down") {
     setExercises((prev) => {
-      const visibleIds = prev
-        .filter((e) => (showArchived ? e.archived : !e.archived))
-        .map((e) => e.id);
-      const posInVisible = visibleIds.indexOf(id);
-      const swapWithId = visibleIds[direction === "up" ? posInVisible - 1 : posInVisible + 1];
+      const target = prev.find((e) => e.id === id);
+      if (!target) return prev;
+      const groupIds = groupIdsFor(target);
+      const posInGroup = groupIds.indexOf(id);
+      const swapWithId = groupIds[direction === "up" ? posInGroup - 1 : posInGroup + 1];
       if (!swapWithId) return prev;
 
       const a = prev.findIndex((e) => e.id === id);
@@ -56,7 +67,7 @@ export default function PlanPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <PageTitle title="Exercise library" subtitle="Edit sets, reps, and weight to match your physio's plan" />
+      <PageTitle title="Exercise library" subtitle="Edit sets, reps, and weight — make it yours" />
 
       {adding && (
         <Card>
@@ -92,14 +103,29 @@ export default function PlanPage() {
       </p>
 
       <ul className="flex flex-col gap-2">
-        {visible.map((ex, index) =>
-          editing?.id === ex.id ? (
-            <Card key={ex.id}>
+        {visible.map((ex, index) => {
+          const prevEx = index > 0 ? visible[index - 1] : undefined;
+          const section = exerciseCategory(ex) === "strength" ? exerciseSection(ex) : null;
+          const prevSection =
+            prevEx && exerciseCategory(prevEx) === "strength" ? exerciseSection(prevEx) : null;
+          const showSectionHeader = section !== null && section !== prevSection;
+          const group = groupIdsFor(ex);
+          const posInGroup = group.indexOf(ex.id);
+
+          return (
+          <li key={ex.id} className="flex flex-col gap-2">
+            {showSectionHeader && (
+              <h3 className="mt-2 text-xs font-semibold uppercase tracking-wide text-zinc-400 first:mt-0">
+                {SECTION_LABEL[section]}
+              </h3>
+            )}
+            {editing?.id === ex.id ? (
+            <Card>
               <h2 className="mb-3 text-sm font-semibold">Edit exercise</h2>
               <ExerciseForm initial={ex} onSave={saveExercise} onCancel={() => setEditing(null)} />
             </Card>
           ) : (
-            <Card key={ex.id}>
+            <Card>
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="flex flex-wrap items-start gap-1.5">
@@ -131,7 +157,7 @@ export default function PlanPage() {
                   <div className="flex gap-0.5">
                     <button
                       onClick={() => moveExercise(ex.id, "up")}
-                      disabled={index === 0}
+                      disabled={posInGroup === 0}
                       aria-label="Move up"
                       className="rounded-md px-1.5 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
                     >
@@ -139,7 +165,7 @@ export default function PlanPage() {
                     </button>
                     <button
                       onClick={() => moveExercise(ex.id, "down")}
-                      disabled={index === visible.length - 1}
+                      disabled={posInGroup === group.length - 1}
                       aria-label="Move down"
                       className="rounded-md px-1.5 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
                     >
@@ -169,8 +195,10 @@ export default function PlanPage() {
                 </div>
               </div>
             </Card>
-          )
-        )}
+            )}
+          </li>
+          );
+        })}
         {visible.length === 0 && (
           <p className="py-6 text-center text-sm text-zinc-400">
             {showArchived ? "No archived exercises." : "No exercises — add one above."}

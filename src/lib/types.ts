@@ -4,6 +4,19 @@ export type Unit = "reps" | "seconds" | "minutes";
 export type ExerciseCategory = "strength" | "recovery";
 export type SessionType = "train" | "recovery" | "rest";
 
+// Groups strength exercises into the order a training day actually flows in.
+// Only meaningful for category: "strength" — recovery days aren't sectioned.
+export type ExerciseSection = "warmup" | "core" | "main" | "finisher";
+
+export const SECTION_ORDER: ExerciseSection[] = ["warmup", "core", "main", "finisher"];
+
+export const SECTION_LABEL: Record<ExerciseSection, string> = {
+  warmup: "Warm-up",
+  core: "Core & glutes",
+  main: "Main lifts",
+  finisher: "Finisher",
+};
+
 export function unitLabel(unit: Unit): string {
   if (unit === "seconds") return "s";
   if (unit === "minutes") return "min";
@@ -20,6 +33,8 @@ export interface Exercise {
   archived?: boolean;
   category?: ExerciseCategory; // missing = "strength", for exercises saved before this field existed
   howTo?: string; // short how-to-do-it / form cue, shown as a collapsible tip
+  section?: ExerciseSection; // missing = "main"; only used to group strength exercises in the UI
+  variantGroup?: string; // exercises sharing this tag are interchangeable — only one shows per day, rotating
 }
 
 export interface SetEntry {

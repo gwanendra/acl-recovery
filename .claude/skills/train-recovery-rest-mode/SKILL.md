@@ -46,10 +46,33 @@ exercises on train days because `"train" !== "strength"`.)
 - Otherwise, `mode` = a local `modeOverride` state (if the user tapped a
   different button) or `suggestedMode(sessions)` by default. Three buttons
   let the user override before logging.
-- The exercise list below is filtered to `categoryForMode(mode)`. Rest mode
-  shows no exercise list at all, just a short "rest is part of the plan"
-  message and a "Log rest day" button.
+- The exercise list below is filtered to `categoryForMode(mode)`, then run
+  through `pickDailyExercises()` (see "Daily rotation" below) — **unless**
+  today's already logged, in which case it shows exactly what's in
+  `todaySession.exercises` instead of a fresh pick. Rest mode shows no
+  exercise list at all, just a short "rest is part of the plan" message and a
+  "Log rest day" button.
+- For `mode === "train"`, the picked list is grouped under section headers
+  (`SECTION_ORDER` / `SECTION_LABEL` in `types.ts`) via a small local
+  `ExerciseCard` component. Recovery mode stays a flat list — sections are
+  strength-only.
 - The CTA button links to `/log/new?type=${mode}`.
+
+## Daily rotation (`pickDailyExercises()` in `src/lib/calc.ts`)
+
+Some exercises share a `variantGroup` tag (e.g. `"calf-raise"`,
+`"glute-activation"`) because they're interchangeable — same training goal,
+different exercise, so the library can grow without every session getting
+longer. `pickDailyExercises(exercises, sessions)` shows every exercise with
+no `variantGroup` unconditionally, and exactly one exercise per group,
+picked as the one after whichever was most recently logged from that group
+(round-robin; defaults to the first in the group if never logged). It's
+purely a function of `sessions`, so the pick is stable all day and only
+advances once you actually log that slot — nothing is date-seeded or random.
+
+Both the home screen and `NewSessionClient` call this the same way (same
+`exercises` + `sessions`), so what's shown on Today always matches what
+`/log/new` lets you log.
 
 ## Logging (`src/app/log/new/`)
 
@@ -58,8 +81,10 @@ exercises on train days because `"train" !== "strength"`.)
 param via `useSearchParams()`, which needs a Suspense boundary for static
 prerendering (see the Next.js `useSearchParams` docs under
 `node_modules/next/dist/docs/`). `NewSessionClient` reads `type`, filters
-exercises by `categoryForMode(type)` (empty list for `rest`), and passes
-both into `SessionForm`, which just stamps `type` onto the saved `Session`.
+exercises by `categoryForMode(type)` then `pickDailyExercises()` (empty list
+for `rest`), and passes both into `SessionForm`, which groups the exercise
+cards by section the same way the home screen does, and stamps `type` onto
+the saved `Session`.
 
 If you add a fourth mode or change the alternation rule, check all three
 spots above — they currently assume exactly train/recovery/rest.

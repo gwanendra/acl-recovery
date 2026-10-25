@@ -29,8 +29,14 @@ a new page that reads stored data.
   (`"reps" | "seconds" | "minutes"`, use `unitLabel()` for display),
   `category` (`"strength" | "recovery"` — missing means `"strength"`, use
   `exerciseCategory()` from `calc.ts` rather than reading `.category`
-  directly), optional `howTo` (a short how-to-do-it tip shown as a
-  collapsible "How to" disclosure), optional `notes`, optional `archived`.
+  directly), optional `section` (`"warmup" | "core" | "main" | "finisher"` —
+  missing means `"main"`, use `exerciseSection()`; only meaningful for
+  `category: "strength"`, groups the train-day list into labeled sections,
+  see `[[add-exercise]]`), optional `variantGroup` (a free-text tag —
+  exercises sharing one are interchangeable, and `pickDailyExercises()` shows
+  only one per day, rotating; see `[[train-recovery-rest-mode]]`), optional
+  `howTo` (a short how-to-do-it tip shown as a collapsible "How to"
+  disclosure), optional `notes`, optional `archived`.
 - **`Session`** — one logged day (`src/app/log`). Has a `date`, `pain`
   (0–10), `swelling` (`"none" | "mild" | "moderate"`), `type`
   (`"train" | "recovery" | "rest"` — missing means `"train"`, use
@@ -70,7 +76,9 @@ Default seed data (starting exercise list, default readiness state) lives in
   default missing `category`/`type` fields (older data) to `"strength"` /
   `"train"`.
 - `suggestedMode(sessions)`, `currentStreak(sessions, today?)`,
-  `categoryForMode(mode)` — power the train/recovery/rest day picker. See
+  `categoryForMode(mode)`, `exerciseSection(exercise)`,
+  `pickDailyExercises(exercises, sessions)` — power the train/recovery/rest
+  day picker and the daily exercise rotation. See
   `[[train-recovery-rest-mode]]`.
 
 If you change how load or symmetry is computed, update this file only — every

@@ -15,7 +15,7 @@ export default function ReadinessPage() {
   return (
     <div className="flex flex-col gap-4">
       <PageTitle
-        title="Phase 4 readiness"
+        title="Readiness check"
         subtitle="Check these off yourself — this is a tracker, not a clearance. Confirm with your physio before progressing."
       />
 
@@ -46,8 +46,8 @@ export default function ReadinessPage() {
 
       {allMet && (
         <div className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-200">
-          All Phase 3 criteria checked. Talk to your physio about progressing toward Phase 4
-          (return to running &amp; sport).
+          All criteria checked. If you ever want to push toward running or sport, loop in your
+          physio — otherwise, this is a great place to be.
         </div>
       )}
     </div>

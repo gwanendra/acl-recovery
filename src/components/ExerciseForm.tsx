@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { Exercise, ExerciseCategory, Unit } from "@/lib/types";
+import type { Exercise, ExerciseCategory, ExerciseSection, Unit } from "@/lib/types";
+import { SECTION_LABEL, SECTION_ORDER } from "@/lib/types";
 import { newId } from "@/lib/useLocalStorage";
 import { Button, Field, Select, Textarea, TextInput } from "@/components/ui";
 
@@ -19,8 +20,10 @@ export default function ExerciseForm({
   const [defaultReps, setDefaultReps] = useState(initial?.defaultReps ?? "8-12");
   const [unit, setUnit] = useState<Unit>(initial?.unit ?? "reps");
   const [category, setCategory] = useState<ExerciseCategory>(initial?.category ?? "strength");
+  const [section, setSection] = useState<ExerciseSection>(initial?.section ?? "main");
   const [notes, setNotes] = useState(initial?.notes ?? "");
   const [howTo, setHowTo] = useState(initial?.howTo ?? "");
+  const [variantGroup, setVariantGroup] = useState(initial?.variantGroup ?? "");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -32,8 +35,10 @@ export default function ExerciseForm({
       defaultReps,
       unit,
       category,
+      section: category === "strength" ? section : undefined,
       notes: notes.trim() || undefined,
       howTo: howTo.trim() || undefined,
+      variantGroup: variantGroup.trim() || undefined,
       archived: initial?.archived,
     });
   }
@@ -80,6 +85,17 @@ export default function ExerciseForm({
           </Select>
         </Field>
       </div>
+      {category === "strength" && (
+        <Field label="Section (where it shows up on a train day)">
+          <Select value={section} onChange={(e) => setSection(e.target.value as ExerciseSection)}>
+            {SECTION_ORDER.map((s) => (
+              <option key={s} value={s}>
+                {SECTION_LABEL[s]}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      )}
       <Field label="Notes (optional)">
         <TextInput value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional" />
       </Field>
@@ -88,6 +104,13 @@ export default function ExerciseForm({
           value={howTo}
           onChange={(e) => setHowTo(e.target.value)}
           placeholder="Form cues, setup, what to watch out for…"
+        />
+      </Field>
+      <Field label="Rotate with (optional)">
+        <TextInput
+          value={variantGroup}
+          onChange={(e) => setVariantGroup(e.target.value)}
+          placeholder="e.g. calf-raise — give matching exercises the same name to rotate between them"
         />
       </Field>
       <div className="mt-1 flex gap-2">

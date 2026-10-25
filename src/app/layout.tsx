@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ACL Phase 3 Tracker",
-  description: "Strength & control phase training tracker for ACL rehab.",
+  title: "Leg Day",
+  description: "A personal strength and discipline tracker.",
 };
 
 export const viewport = {

@@ -1,4 +1,12 @@
-import type { Exercise, ExerciseCategory, ExerciseLog, Session, SessionType, SetEntry } from "./types";
+import type {
+  Exercise,
+  ExerciseCategory,
+  ExerciseLog,
+  ExerciseSection,
+  Session,
+  SessionType,
+  SetEntry,
+} from "./types";
 
 export function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
@@ -6,6 +14,52 @@ export function todayIso(): string {
 
 export function exerciseCategory(exercise: Exercise): ExerciseCategory {
   return exercise.category ?? "strength";
+}
+
+export function exerciseSection(exercise: Exercise): ExerciseSection {
+  return exercise.section ?? "main";
+}
+
+// Picks one exercise per day from a list that may include interchangeable
+// variants (same `variantGroup`), so you don't see every alternative every
+// session. Exercises with no `variantGroup` always show. Within a group,
+// rotates to whichever exercise comes after the one most recently logged —
+// defaults to the first in the list if the group has never been logged.
+export function pickDailyExercises(exercises: Exercise[], sessions: Session[]): Exercise[] {
+  const order = new Map(exercises.map((e, i) => [e.id, i]));
+  const groups = new Map<string, Exercise[]>();
+  const picks: Exercise[] = [];
+
+  for (const ex of exercises) {
+    if (!ex.variantGroup) {
+      picks.push(ex);
+      continue;
+    }
+    const group = groups.get(ex.variantGroup) ?? [];
+    group.push(ex);
+    groups.set(ex.variantGroup, group);
+  }
+
+  for (const group of groups.values()) {
+    picks.push(group.length === 1 ? group[0] : pickNextInGroup(group, sessions));
+  }
+
+  return picks.sort((a, b) => order.get(a.id)! - order.get(b.id)!);
+}
+
+function pickNextInGroup(group: Exercise[], sessions: Session[]): Exercise {
+  const groupIds = new Set(group.map((e) => e.id));
+  const sortedSessions = sessions.slice().sort((a, b) => b.date.localeCompare(a.date));
+
+  for (const session of sortedSessions) {
+    const loggedId = session.exercises.find((log) => groupIds.has(log.exerciseId))?.exerciseId;
+    if (loggedId) {
+      const idx = group.findIndex((e) => e.id === loggedId);
+      return group[(idx + 1) % group.length];
+    }
+  }
+
+  return group[0];
 }
 
 // "train"/"recovery" day modes map to "strength"/"recovery" exercise categories —

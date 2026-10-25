@@ -20,6 +20,8 @@ Edit `DEFAULT_EXERCISES` in `src/lib/defaults.ts`. Each entry is an
   defaultReps: "8-12",      // free text — can be a range or a single number
   unit: "reps",             // "reps" | "seconds" | "minutes"
   category: "strength",     // "strength" (train day) | "recovery" (light day)
+  section: "main",          // strength only: "warmup" | "core" | "finisher" | "main"
+  variantGroup: "calf-raise", // optional: shares a rotation slot with other exercises of this tag
   notes: "Progress with dumbbells", // optional, short context
   howTo: "Rear foot up on a bench...", // optional, form cues / how-to-do-it tip
 }
@@ -29,6 +31,22 @@ Edit `DEFAULT_EXERCISES` in `src/lib/defaults.ts`. Each entry is an
 Recovery day — see `[[train-recovery-rest-mode]]`. Missing `category` is
 treated as `"strength"` (`exerciseCategory()` in `calc.ts`), so older
 entries without the field still work.
+
+`section` only matters for `category: "strength"` — it groups the train-day
+list under headers (Warm-up / Core & glutes / Main lifts / Finisher).
+Missing `section` defaults to `"main"` (`exerciseSection()`). `main` is
+meant for the tracked compound lifts (kept fixed session to session so
+progress is comparable) — warm-up, core/glute activation, and finisher
+isolation work are the better home for anything meant to vary.
+
+`variantGroup` is how exercise variety/rotation works: give two or more
+exercises the same string and only one shows per day, rotating — see
+"Daily rotation" in `[[train-recovery-rest-mode]]`. Only tag exercises as a
+group when they're genuinely interchangeable for the same goal (e.g. five
+calf-raise variations, or "which cardio today" for recovery) — not a
+progression ladder (plain vs. single-leg version of the same move), which
+should stay separate entries with a `notes` hint instead, so the user
+advances it deliberately rather than it rotating away.
 
 This list is only the *seed* used the first time the app runs in a browser
 with nothing in `localStorage` yet (key `acl.exercises.v1` — see
