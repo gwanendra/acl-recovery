@@ -23,6 +23,7 @@ export default function ExerciseForm({
   const [section, setSection] = useState<ExerciseSection>(initial?.section ?? "main");
   const [notes, setNotes] = useState(initial?.notes ?? "");
   const [howTo, setHowTo] = useState(initial?.howTo ?? "");
+  const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? "");
   const [variantGroup, setVariantGroup] = useState(initial?.variantGroup ?? "");
 
   function handleSubmit(e: React.FormEvent) {
@@ -38,6 +39,7 @@ export default function ExerciseForm({
       section: category === "strength" ? section : undefined,
       notes: notes.trim() || undefined,
       howTo: howTo.trim() || undefined,
+      imageUrl: imageUrl.trim() || undefined,
       variantGroup: variantGroup.trim() || undefined,
       archived: initial?.archived,
     });
@@ -104,6 +106,13 @@ export default function ExerciseForm({
           value={howTo}
           onChange={(e) => setHowTo(e.target.value)}
           placeholder="Form cues, setup, what to watch out for…"
+        />
+      </Field>
+      <Field label="Demo image URL (optional)">
+        <TextInput
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          placeholder="https://… — an external link, not uploaded"
         />
       </Field>
       <Field label="Rotate with (optional)">

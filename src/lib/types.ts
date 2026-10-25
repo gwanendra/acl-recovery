@@ -8,6 +8,13 @@ export type SessionType = "train" | "recovery" | "rest";
 // Only meaningful for category: "strength" — recovery days aren't sectioned.
 export type ExerciseSection = "warmup" | "core" | "main" | "finisher";
 
+// Only meaningful for section "main". Lets a train day alternate between a
+// quad-focused and a hip-hinge-focused set of main lifts instead of doing
+// every main lift every session — see pickDailyExercises/mainFocusForToday
+// in calc.ts. Main exercises without this field always show (e.g. none left
+// untagged today, but a future one could opt out of the split).
+export type MainFocus = "quad" | "hip";
+
 export const SECTION_ORDER: ExerciseSection[] = ["warmup", "core", "main", "finisher"];
 
 export const SECTION_LABEL: Record<ExerciseSection, string> = {
@@ -32,8 +39,10 @@ export interface Exercise {
   notes?: string;
   archived?: boolean;
   category?: ExerciseCategory; // missing = "strength", for exercises saved before this field existed
-  howTo?: string; // short how-to-do-it / form cue, shown as a collapsible tip
+  howTo?: string; // how-to-do-it / form cues, shown as a collapsible tip; "\n" for line breaks (rendered via whitespace-pre-line)
+  imageUrl?: string; // external demo image URL, shown in the same collapsible tip — never hosted in this repo
   section?: ExerciseSection; // missing = "main"; only used to group strength exercises in the UI
+  mainFocus?: MainFocus; // only used for section "main" — see MainFocus
   variantGroup?: string; // exercises sharing this tag are interchangeable — only one shows per day, rotating
 }
 

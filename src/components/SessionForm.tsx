@@ -11,6 +11,19 @@ function emptySet() {
   return { id: newId(), reps: 0, weight: 0, side: "both" as Side };
 }
 
+// "8-12" -> 8, "30-45" -> 30, "10-15 steps each way" -> 10. Falls back to 0
+// (bodyweight-only exercises, or anything we can't parse a number out of).
+function parseDefaultReps(defaultReps: string): number {
+  const match = defaultReps.match(/\d+/);
+  return match ? Number(match[0]) : 0;
+}
+
+const SIDE_LABEL: Record<Side, string> = {
+  both: "Both legs",
+  injured: "Injured",
+  healthy: "Healthy",
+};
+
 // Most recent logged sets for this exercise, so a session starts prefilled
 // with what you actually did last time instead of blank 0/0 fields.
 function lastLoggedSets(exerciseId: string, sessions: Session[]): SetEntry[] | undefined {
@@ -48,7 +61,7 @@ export default function SessionForm({
         sets: [
           prefill
             ? { id: newId(), reps: prefill.reps, weight: prefill.weight, side: prefill.side }
-            : emptySet(),
+            : { id: newId(), reps: parseDefaultReps(ex.defaultReps), weight: 0, side: "both" as Side },
         ],
       };
     })
@@ -56,6 +69,29 @@ export default function SessionForm({
   const [pain, setPain] = useState(0);
   const [swelling, setSwelling] = useState<Swelling>("none");
   const [notes, setNotes] = useState("");
+  // Cards start collapsed showing the prefilled default — tap Done to accept
+  // it as-is, or Edit to open the set-by-set inputs below.
+  const [editingIds, setEditingIds] = useState<Set<string>>(new Set());
+  const [doneIds, setDoneIds] = useState<Set<string>>(new Set());
+
+  function toggleEdit(exerciseId: string) {
+    setEditingIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(exerciseId)) next.delete(exerciseId);
+      else next.add(exerciseId);
+      return next;
+    });
+  }
+
+  function markDone(exerciseId: string) {
+    setDoneIds((prev) => new Set(prev).add(exerciseId));
+    setEditingIds((prev) => {
+      if (!prev.has(exerciseId)) return prev;
+      const next = new Set(prev);
+      next.delete(exerciseId);
+      return next;
+    });
+  }
 
   function updateSet(exerciseId: string, setId: string, patch: Partial<ExerciseLog["sets"][number]>) {
     setLogs((prev) =>
@@ -137,6 +173,8 @@ export default function SessionForm({
         const prevExercise = index > 0 ? exercises.find((e) => e.id === logs[index - 1].exerciseId) : undefined;
         const prevSection = prevExercise && type === "train" ? exerciseSection(prevExercise) : null;
         const showSectionHeader = section !== null && section !== prevSection;
+        const isEditing = editingIds.has(log.exerciseId);
+        const isDone = doneIds.has(log.exerciseId);
         return (
           <div key={log.exerciseId} className="flex flex-col gap-2">
             {showSectionHeader && (
@@ -144,9 +182,12 @@ export default function SessionForm({
                 {SECTION_LABEL[section]}
               </h3>
             )}
-            <Card>
+            <Card className={isDone ? "opacity-70" : undefined}>
             <div className="mb-2 flex items-center justify-between">
-              <p className="font-medium">{log.exerciseName}</p>
+              <p className="font-medium">
+                {isDone && <span className="mr-1 text-emerald-600 dark:text-emerald-400">✓</span>}
+                {log.exerciseName}
+              </p>
               <button
                 type="button"
                 onClick={() => removeExercise(log.exerciseId)}
@@ -165,73 +206,120 @@ export default function SessionForm({
                 <summary className="cursor-pointer text-xs font-medium text-emerald-600 dark:text-emerald-400">
                   How to
                 </summary>
-                <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{exercise.howTo}</p>
+                {exercise.imageUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element -- external, unhosted demo image
+                  <img
+                    src={exercise.imageUrl}
+                    alt={`${exercise.name} demonstration`}
+                    loading="lazy"
+                    className="mt-1 max-h-48 w-auto rounded border border-zinc-200 dark:border-zinc-700"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                )}
+                <p className="mt-1 whitespace-pre-line text-xs text-zinc-500 dark:text-zinc-400">{exercise.howTo}</p>
               </details>
             )}
-            <div className="flex flex-col gap-2">
-              {log.sets.map((set, idx) => (
-                <div key={set.id} className="flex items-center gap-2">
-                  <span className="w-5 shrink-0 text-xs text-zinc-400">{idx + 1}</span>
-                  <TextInput
-                    type="number"
-                    min={0}
-                    value={set.reps === 0 ? "" : set.reps}
-                    onChange={(e) =>
-                      updateSet(log.exerciseId, set.id, { reps: e.target.value === "" ? 0 : Number(e.target.value) })
-                    }
-                    placeholder={exercise ? unitLabel(exercise.unit) : "reps"}
-                    className="w-16"
-                  />
-                  <TextInput
-                    type="number"
-                    min={0}
-                    step={0.5}
-                    value={set.weight === 0 ? "" : set.weight}
-                    onChange={(e) =>
-                      updateSet(log.exerciseId, set.id, {
-                        weight: e.target.value === "" ? 0 : Number(e.target.value),
-                      })
-                    }
-                    placeholder="kg"
-                    className="w-16"
-                  />
-                  <Select
-                    value={set.side}
-                    onChange={(e) => updateSet(log.exerciseId, set.id, { side: e.target.value as Side })}
-                    className="flex-1"
-                  >
-                    <option value="both">Both legs</option>
-                    <option value="injured">Injured</option>
-                    <option value="healthy">Healthy</option>
-                  </Select>
+
+            {isEditing ? (
+              <>
+                <div className="flex flex-col gap-2">
+                  {log.sets.map((set, idx) => (
+                    <div key={set.id} className="flex items-center gap-2">
+                      <span className="w-5 shrink-0 text-xs text-zinc-400">{idx + 1}</span>
+                      <TextInput
+                        type="number"
+                        min={0}
+                        value={set.reps === 0 ? "" : set.reps}
+                        onChange={(e) =>
+                          updateSet(log.exerciseId, set.id, {
+                            reps: e.target.value === "" ? 0 : Number(e.target.value),
+                          })
+                        }
+                        placeholder={exercise ? unitLabel(exercise.unit) : "reps"}
+                        className="w-16"
+                      />
+                      <TextInput
+                        type="number"
+                        min={0}
+                        step={0.5}
+                        value={set.weight === 0 ? "" : set.weight}
+                        onChange={(e) =>
+                          updateSet(log.exerciseId, set.id, {
+                            weight: e.target.value === "" ? 0 : Number(e.target.value),
+                          })
+                        }
+                        placeholder="kg"
+                        className="w-16"
+                      />
+                      <Select
+                        value={set.side}
+                        onChange={(e) => updateSet(log.exerciseId, set.id, { side: e.target.value as Side })}
+                        className="flex-1"
+                      >
+                        <option value="both">Both legs</option>
+                        <option value="injured">Injured</option>
+                        <option value="healthy">Healthy</option>
+                      </Select>
+                      <button
+                        type="button"
+                        onClick={() => removeSet(log.exerciseId, set.id)}
+                        className="shrink-0 px-1 text-zinc-400 hover:text-red-500"
+                        aria-label="Remove set"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2 flex gap-3">
                   <button
                     type="button"
-                    onClick={() => removeSet(log.exerciseId, set.id)}
-                    className="shrink-0 px-1 text-zinc-400 hover:text-red-500"
-                    aria-label="Remove set"
+                    onClick={() => addSet(log.exerciseId)}
+                    className="text-xs font-medium text-emerald-600 dark:text-emerald-400"
                   >
-                    ×
+                    + Add set
                   </button>
+                  {log.sets.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => copyFirstSetToAll(log.exerciseId)}
+                      className="text-xs font-medium text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400"
+                    >
+                      Copy set 1 to all
+                    </button>
+                  )}
                 </div>
-              ))}
-            </div>
-            <div className="mt-2 flex gap-3">
-              <button
+              </>
+            ) : (
+              <div className="flex flex-col gap-1 text-sm text-zinc-700 dark:text-zinc-200">
+                {log.sets.length === 0 ? (
+                  <p className="text-xs text-zinc-400">No sets — tap Edit to add one.</p>
+                ) : (
+                  log.sets.map((set, idx) => (
+                    <p key={set.id}>
+                      {log.sets.length > 1 ? `${idx + 1}. ` : ""}
+                      {set.reps} {unitLabel(exercise?.unit ?? "reps")}
+                      {set.weight > 0 ? ` · ${set.weight}kg` : " · bodyweight"} · {SIDE_LABEL[set.side]}
+                    </p>
+                  ))
+                )}
+              </div>
+            )}
+
+            <div className="mt-3 flex gap-2">
+              <Button type="button" onClick={() => markDone(log.exerciseId)} className="flex-1">
+                {isDone ? "✓ Done" : "Done"}
+              </Button>
+              <Button
                 type="button"
-                onClick={() => addSet(log.exerciseId)}
-                className="text-xs font-medium text-emerald-600 dark:text-emerald-400"
+                variant="secondary"
+                onClick={() => toggleEdit(log.exerciseId)}
+                className="flex-1"
               >
-                + Add set
-              </button>
-              {log.sets.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => copyFirstSetToAll(log.exerciseId)}
-                  className="text-xs font-medium text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400"
-                >
-                  Copy set 1 to all
-                </button>
-              )}
+                {isEditing ? "Collapse" : "Edit"}
+              </Button>
             </div>
             </Card>
           </div>

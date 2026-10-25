@@ -262,7 +262,19 @@ function ExerciseCard({ ex }: { ex: Exercise }) {
           <summary className="cursor-pointer text-xs font-medium text-emerald-600 dark:text-emerald-400">
             How to
           </summary>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{ex.howTo}</p>
+          {ex.imageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element -- external, unhosted demo image
+            <img
+              src={ex.imageUrl}
+              alt={`${ex.name} demonstration`}
+              loading="lazy"
+              className="mt-1 max-h-48 w-auto rounded border border-zinc-200 dark:border-zinc-700"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+          )}
+          <p className="mt-1 whitespace-pre-line text-xs text-zinc-500 dark:text-zinc-400">{ex.howTo}</p>
         </details>
       )}
     </Card>

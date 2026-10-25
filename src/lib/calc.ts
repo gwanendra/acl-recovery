@@ -3,6 +3,7 @@ import type {
   ExerciseCategory,
   ExerciseLog,
   ExerciseSection,
+  MainFocus,
   Session,
   SessionType,
   SetEntry,
@@ -20,17 +21,44 @@ export function exerciseSection(exercise: Exercise): ExerciseSection {
   return exercise.section ?? "main";
 }
 
+// Alternates which half of the main lifts a train day uses (quad-focused vs
+// hip-hinge-focused), so a session isn't doing every main compound lift
+// every time — the thing that was blowing a train day well past an hour.
+// Looks at the most recent train session for any exercise carrying a
+// `mainFocus` tag and flips to the other one; defaults to "quad" if no train
+// session has logged a tagged exercise yet.
+export function mainFocusForToday(exercises: Exercise[], sessions: Session[]): MainFocus {
+  const focusById = new Map(exercises.map((e) => [e.id, e.mainFocus]));
+  const trainSessions = sessions
+    .filter((s) => sessionType(s) === "train")
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
+
+  for (const session of trainSessions) {
+    for (const log of session.exercises) {
+      const focus = focusById.get(log.exerciseId);
+      if (focus) return focus === "quad" ? "hip" : "quad";
+    }
+  }
+  return "quad";
+}
+
 // Picks one exercise per day from a list that may include interchangeable
 // variants (same `variantGroup`), so you don't see every alternative every
 // session. Exercises with no `variantGroup` always show. Within a group,
 // rotates to whichever exercise comes after the one most recently logged —
 // defaults to the first in the list if the group has never been logged.
+// Main-section exercises tagged with `mainFocus` are filtered to today's
+// focus first (see mainFocusForToday) — untagged exercises are unaffected.
 export function pickDailyExercises(exercises: Exercise[], sessions: Session[]): Exercise[] {
-  const order = new Map(exercises.map((e, i) => [e.id, i]));
+  const focus = mainFocusForToday(exercises, sessions);
+  const focused = exercises.filter((ex) => !ex.mainFocus || ex.mainFocus === focus);
+
+  const order = new Map(focused.map((e, i) => [e.id, i]));
   const groups = new Map<string, Exercise[]>();
   const picks: Exercise[] = [];
 
-  for (const ex of exercises) {
+  for (const ex of focused) {
     if (!ex.variantGroup) {
       picks.push(ex);
       continue;
