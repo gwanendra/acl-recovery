@@ -58,6 +58,30 @@ export const DEFAULT_EXERCISES: Exercise[] = [
       "Anchor a band behind your knee (around a rack post or door). Stand with a slight bend in the knee, then straighten it fully against the band, squeezing your quad at the top. Small range, but don't skip the lockout — that's the whole point of the move.",
   },
   {
+    id: "mini-squat-vmo",
+    name: "Mini-squat with VMO cue",
+    defaultSets: 3,
+    defaultReps: "10-15",
+    unit: "reps",
+    category: "strength",
+    section: "core",
+    notes: "Closed-chain VMO work — safer than open-chain leg extension early on",
+    howTo:
+      "Feet shoulder-width, squat down only to about 30-45° knee bend — well short of parallel. Focus on pressing evenly through your whole foot and feeling the inner quad (VMO) engage as you straighten back up. Keep it shallow; depth isn't the point here.",
+  },
+  {
+    id: "short-arc-quad",
+    name: "Short-arc quad (SAQ)",
+    defaultSets: 3,
+    defaultReps: "15-20",
+    unit: "reps",
+    category: "strength",
+    section: "core",
+    notes: "VMO-focused quad activation — pairs well with TKE",
+    howTo:
+      "Lie on your back with a rolled towel or small bolster under your knee. Straighten your knee fully over the roll without lifting your thigh off it, squeezing hard at lockout, then lower slowly. Small range on purpose — it's the terminal extension that hits the VMO.",
+  },
+  {
     id: "band-lateral-walks",
     name: "Band lateral walks (monster walk)",
     defaultSets: 3,
