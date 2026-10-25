@@ -12,13 +12,27 @@ import {
   YAxis,
 } from "recharts";
 import { useExercises, useSessions } from "@/lib/store";
-import { loadOverTime, symmetryOverTime } from "@/lib/calc";
+import { exerciseCategory, exerciseSection, loadOverTime, symmetryOverTime } from "@/lib/calc";
+import { SECTION_LABEL, SECTION_ORDER } from "@/lib/types";
 import { Card, Field, PageTitle, Select } from "@/components/ui";
 
 export default function ProgressPage() {
   const [exercises, , exercisesHydrated] = useExercises();
   const [sessions, , sessionsHydrated] = useSessions();
   const [exerciseId, setExerciseId] = useState<string>("");
+
+  const exerciseGroups = useMemo(() => {
+    const strengthGroups = SECTION_ORDER.map((section) => ({
+      label: SECTION_LABEL[section],
+      exercises: exercises.filter(
+        (ex) => exerciseCategory(ex) === "strength" && exerciseSection(ex) === section
+      ),
+    })).filter((group) => group.exercises.length > 0);
+    const recoveryExercises = exercises.filter((ex) => exerciseCategory(ex) === "recovery");
+    return recoveryExercises.length > 0
+      ? [...strengthGroups, { label: "Recovery", exercises: recoveryExercises }]
+      : strengthGroups;
+  }, [exercises]);
 
   const loadData = useMemo(
     () => (exerciseId ? loadOverTime(sessions, exerciseId) : []),
@@ -51,10 +65,14 @@ export default function ProgressPage() {
       <Field label="Exercise">
         <Select value={exerciseId} onChange={(e) => setExerciseId(e.target.value)}>
           <option value="">All exercises (symmetry only)</option>
-          {exercises.map((ex) => (
-            <option key={ex.id} value={ex.id}>
-              {ex.name}
-            </option>
+          {exerciseGroups.map((group) => (
+            <optgroup key={group.label} label={group.label}>
+              {group.exercises.map((ex) => (
+                <option key={ex.id} value={ex.id}>
+                  {ex.name}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </Select>
       </Field>

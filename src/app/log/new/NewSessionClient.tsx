@@ -50,7 +50,7 @@ export default function NewSessionClient() {
   return (
     <div className="flex flex-col gap-4">
       <PageTitle title={TITLE[type]} subtitle={SUBTITLE[type]} />
-      <SessionForm exercises={relevantExercises} type={type} onSave={handleSave} />
+      <SessionForm exercises={relevantExercises} type={type} sessions={sessions} onSave={handleSave} />
     </div>
   );
 }

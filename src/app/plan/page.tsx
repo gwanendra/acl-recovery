@@ -154,12 +154,12 @@ export default function PlanPage() {
                   )}
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-1">
-                  <div className="flex gap-0.5">
+                  <div className="flex gap-1">
                     <button
                       onClick={() => moveExercise(ex.id, "up")}
                       disabled={posInGroup === 0}
                       aria-label="Move up"
-                      className="rounded-md px-1.5 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
+                      className="flex h-11 w-11 items-center justify-center rounded-md text-sm font-medium text-zinc-500 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
                     >
                       ↑
                     </button>
@@ -167,7 +167,7 @@ export default function PlanPage() {
                       onClick={() => moveExercise(ex.id, "down")}
                       disabled={posInGroup === group.length - 1}
                       aria-label="Move down"
-                      className="rounded-md px-1.5 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
+                      className="flex h-11 w-11 items-center justify-center rounded-md text-sm font-medium text-zinc-500 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
                     >
                       ↓
                     </button>

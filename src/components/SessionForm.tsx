@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Exercise, ExerciseLog, Session, SessionType, Side, Swelling } from "@/lib/types";
+import type { Exercise, ExerciseLog, Session, SessionType, SetEntry, Side, Swelling } from "@/lib/types";
 import { SECTION_LABEL, unitLabel } from "@/lib/types";
 import { exerciseSection, todayIso } from "@/lib/calc";
 import { newId } from "@/lib/useLocalStorage";
@@ -11,22 +11,42 @@ function emptySet() {
   return { id: newId(), reps: 0, weight: 0, side: "both" as Side };
 }
 
+// Most recent logged sets for this exercise, so a session starts prefilled
+// with what you actually did last time instead of blank 0/0 fields.
+function lastLoggedSets(exerciseId: string, sessions: Session[]): SetEntry[] | undefined {
+  const sorted = sessions
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
+  for (const session of sorted) {
+    const log = session.exercises.find((l) => l.exerciseId === exerciseId);
+    if (log && log.sets.length > 0) return log.sets;
+  }
+  return undefined;
+}
+
 export default function SessionForm({
   exercises,
   type,
+  sessions,
   onSave,
 }: {
   exercises: Exercise[];
   type: SessionType;
+  sessions: Session[];
   onSave: (session: Session) => void;
 }) {
   const [date, setDate] = useState(todayIso());
   const [logs, setLogs] = useState<ExerciseLog[]>(
-    exercises.map((ex) => ({
-      exerciseId: ex.id,
-      exerciseName: ex.name,
-      sets: Array.from({ length: ex.defaultSets }, emptySet),
-    }))
+    exercises.map((ex) => {
+      const lastSets = lastLoggedSets(ex.id, sessions);
+      return {
+        exerciseId: ex.id,
+        exerciseName: ex.name,
+        sets: lastSets
+          ? lastSets.map((s) => ({ id: newId(), reps: s.reps, weight: s.weight, side: s.side }))
+          : Array.from({ length: ex.defaultSets }, emptySet),
+      };
+    })
   );
   const [pain, setPain] = useState(0);
   const [swelling, setSwelling] = useState<Swelling>("none");
@@ -47,6 +67,21 @@ export default function SessionForm({
       prev.map((log) =>
         log.exerciseId === exerciseId ? { ...log, sets: [...log.sets, emptySet()] } : log
       )
+    );
+  }
+
+  function copyFirstSetToAll(exerciseId: string) {
+    setLogs((prev) =>
+      prev.map((log) => {
+        if (log.exerciseId !== exerciseId || log.sets.length < 2) return log;
+        const first = log.sets[0];
+        return {
+          ...log,
+          sets: log.sets.map((s, i) =>
+            i === 0 ? s : { ...s, reps: first.reps, weight: first.weight, side: first.side }
+          ),
+        };
+      })
     );
   }
 
@@ -135,8 +170,10 @@ export default function SessionForm({
                   <TextInput
                     type="number"
                     min={0}
-                    value={set.reps}
-                    onChange={(e) => updateSet(log.exerciseId, set.id, { reps: Number(e.target.value) })}
+                    value={set.reps === 0 ? "" : set.reps}
+                    onChange={(e) =>
+                      updateSet(log.exerciseId, set.id, { reps: e.target.value === "" ? 0 : Number(e.target.value) })
+                    }
                     placeholder={exercise ? unitLabel(exercise.unit) : "reps"}
                     className="w-16"
                   />
@@ -144,9 +181,11 @@ export default function SessionForm({
                     type="number"
                     min={0}
                     step={0.5}
-                    value={set.weight}
+                    value={set.weight === 0 ? "" : set.weight}
                     onChange={(e) =>
-                      updateSet(log.exerciseId, set.id, { weight: Number(e.target.value) })
+                      updateSet(log.exerciseId, set.id, {
+                        weight: e.target.value === "" ? 0 : Number(e.target.value),
+                      })
                     }
                     placeholder="kg"
                     className="w-16"
@@ -171,13 +210,24 @@ export default function SessionForm({
                 </div>
               ))}
             </div>
-            <button
-              type="button"
-              onClick={() => addSet(log.exerciseId)}
-              className="mt-2 text-xs font-medium text-emerald-600 dark:text-emerald-400"
-            >
-              + Add set
-            </button>
+            <div className="mt-2 flex gap-3">
+              <button
+                type="button"
+                onClick={() => addSet(log.exerciseId)}
+                className="text-xs font-medium text-emerald-600 dark:text-emerald-400"
+              >
+                + Add set
+              </button>
+              {log.sets.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => copyFirstSetToAll(log.exerciseId)}
+                  className="text-xs font-medium text-zinc-500 hover:text-emerald-600 dark:text-zinc-400 dark:hover:text-emerald-400"
+                >
+                  Copy set 1 to all
+                </button>
+              )}
+            </div>
             </Card>
           </div>
         );
