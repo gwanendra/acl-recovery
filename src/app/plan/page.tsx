@@ -37,6 +37,23 @@ export default function PlanPage() {
     setExercises((prev) => prev.filter((e) => e.id !== id));
   }
 
+  function moveExercise(id: string, direction: "up" | "down") {
+    setExercises((prev) => {
+      const visibleIds = prev
+        .filter((e) => (showArchived ? e.archived : !e.archived))
+        .map((e) => e.id);
+      const posInVisible = visibleIds.indexOf(id);
+      const swapWithId = visibleIds[direction === "up" ? posInVisible - 1 : posInVisible + 1];
+      if (!swapWithId) return prev;
+
+      const a = prev.findIndex((e) => e.id === id);
+      const b = prev.findIndex((e) => e.id === swapWithId);
+      const next = [...prev];
+      [next[a], next[b]] = [next[b], next[a]];
+      return next;
+    });
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <PageTitle title="Exercise library" subtitle="Edit sets, reps, and weight to match your physio's plan" />
@@ -69,8 +86,13 @@ export default function PlanPage() {
         </button>
       </div>
 
+      <p className="text-xs text-zinc-400">
+        Use the arrows to set the order you do exercises in — this is the order they show up on
+        Today and in session logs.
+      </p>
+
       <ul className="flex flex-col gap-2">
-        {visible.map((ex) =>
+        {visible.map((ex, index) =>
           editing?.id === ex.id ? (
             <Card key={ex.id}>
               <h2 className="mb-3 text-sm font-semibold">Edit exercise</h2>
@@ -105,7 +127,26 @@ export default function PlanPage() {
                     </details>
                   )}
                 </div>
-                <div className="flex shrink-0 gap-1">
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <div className="flex gap-0.5">
+                    <button
+                      onClick={() => moveExercise(ex.id, "up")}
+                      disabled={index === 0}
+                      aria-label="Move up"
+                      className="rounded-md px-1.5 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      onClick={() => moveExercise(ex.id, "down")}
+                      disabled={index === visible.length - 1}
+                      aria-label="Move down"
+                      className="rounded-md px-1.5 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100 disabled:opacity-30 dark:hover:bg-zinc-800"
+                    >
+                      ↓
+                    </button>
+                  </div>
+                  <div className="flex gap-1">
                   <button
                     onClick={() => setEditing(ex)}
                     className="rounded-md px-2 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
@@ -124,6 +165,7 @@ export default function PlanPage() {
                   >
                     Delete
                   </button>
+                  </div>
                 </div>
               </div>
             </Card>

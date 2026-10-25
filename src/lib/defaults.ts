@@ -2,6 +2,50 @@ import type { Exercise, ReadinessState } from "./types";
 
 export const DEFAULT_EXERCISES: Exercise[] = [
   {
+    id: "stationary-bike",
+    name: "Stationary bike (warm-up)",
+    defaultSets: 1,
+    defaultReps: "5",
+    unit: "minutes",
+    category: "strength",
+    notes: "Before training",
+    howTo:
+      "Light resistance, just enough to get blood flowing before you lift. This is a warm-up, not a workout — keep it easy.",
+  },
+  {
+    id: "single-leg-balance",
+    name: "Single-leg balance",
+    defaultSets: 3,
+    defaultReps: "30-45",
+    unit: "seconds",
+    category: "strength",
+    notes: "Progress to unstable surface or eyes closed",
+    howTo:
+      "Stand on one leg, soft knee, eyes forward. Too easy? Close your eyes or stand on a pillow/cushion to make it harder.",
+  },
+  {
+    id: "band-terminal-knee-extension",
+    name: "Band terminal knee extension (TKE)",
+    defaultSets: 3,
+    defaultReps: "15-20",
+    unit: "reps",
+    category: "strength",
+    notes: "Quad activation — classic early ACL drill",
+    howTo:
+      "Anchor a band behind your knee (around a rack post or door). Stand with a slight bend in the knee, then straighten it fully against the band, squeezing your quad at the top. Small range, but don't skip the lockout — that's the whole point of the move.",
+  },
+  {
+    id: "band-lateral-walks",
+    name: "Band lateral walks (monster walk)",
+    defaultSets: 3,
+    defaultReps: "10-15 steps each way",
+    unit: "reps",
+    category: "strength",
+    notes: "Glute medius — keeps the knee from caving in",
+    howTo:
+      "Band around your ankles or just above the knees, feet hip-width, knees slightly bent. Step sideways keeping tension on the band the whole time — don't let your feet drift together or your knee cave inward.",
+  },
+  {
     id: "split-squat",
     name: "Split squat",
     defaultSets: 3,
@@ -56,26 +100,15 @@ export const DEFAULT_EXERCISES: Exercise[] = [
       "Keep your hips pressed into the pad or floor the whole time. Curl through a full range without letting your hips lift up.",
   },
   {
-    id: "single-leg-balance",
-    name: "Single-leg balance",
+    id: "nordic-hamstring-curl",
+    name: "Nordic hamstring curl (bench)",
     defaultSets: 3,
-    defaultReps: "30-45",
-    unit: "seconds",
+    defaultReps: "4-6",
+    unit: "reps",
     category: "strength",
-    notes: "Progress to unstable surface or eyes closed",
+    notes: "Advanced — only once regular hamstring curls feel easy",
     howTo:
-      "Stand on one leg, soft knee, eyes forward. Too easy? Close your eyes or stand on a pillow/cushion to make it harder.",
-  },
-  {
-    id: "stationary-bike",
-    name: "Stationary bike (warm-up)",
-    defaultSets: 1,
-    defaultReps: "5",
-    unit: "minutes",
-    category: "strength",
-    notes: "Before training",
-    howTo:
-      "Light resistance, just enough to get blood flowing before you lift. This is a warm-up, not a workout — keep it easy.",
+      "Kneel on a pad with your ankles locked down (partner holds them, or use a Nordic bench/strap). Keeping your hips straight, lower your torso forward as slowly as you can control using your hamstrings, then push back up. Most people can only lower a little before losing control at first — that's normal, don't force the full range.",
   },
   {
     id: "easy-bike",
@@ -96,6 +129,39 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     category: "recovery",
     howTo:
       "Gentle hip, quad, hamstring, and calf stretches. Nothing should feel sharp — ease into each stretch and breathe through it.",
+  },
+  {
+    id: "heel-slides",
+    name: "Heel slides",
+    defaultSets: 3,
+    defaultReps: "10-15",
+    unit: "reps",
+    category: "recovery",
+    notes: "Knee flexion range of motion",
+    howTo:
+      "Lie on your back, slide your heel toward your glutes by bending the knee as far as comfortable, hold a couple seconds, then slide back out. Go by feel — stretch, not pain.",
+  },
+  {
+    id: "kneeling-heel-sit",
+    name: "Kneeling heel-sit stretch",
+    defaultSets: 3,
+    defaultReps: "20-30",
+    unit: "seconds",
+    category: "recovery",
+    notes: "Deep knee flexion — ease in, don't force it",
+    howTo:
+      "Kneel and slowly sit your hips back toward your heels, only as far as feels okay. This is a common way to regain full knee bend after surgery — small, frequent doses beat forcing one big stretch.",
+  },
+  {
+    id: "hip-flexor-stretch",
+    name: "Half-kneeling hip flexor stretch",
+    defaultSets: 2,
+    defaultReps: "30-45",
+    unit: "seconds",
+    category: "recovery",
+    notes: "Tight hip flexors are common after months of altered gait",
+    howTo:
+      "Half-kneeling position, back knee down, front foot forward. Tuck your pelvis slightly and shift your weight forward until you feel a stretch in the front of the back hip — squeeze that back glute to deepen it.",
   },
   {
     id: "easy-walk",
