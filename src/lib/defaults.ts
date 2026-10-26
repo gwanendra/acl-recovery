@@ -13,6 +13,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "warmup-cardio",
     notes: "Before training",
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Magnetic_resistance_stationary_bicycle_exercise_bike.JPG",
+    areasTrained: ["Legs", "cardio"],
     howTo:
       "Light resistance, just enough to get blood flowing — 5 min easy spin, not a workout.\n\n• Watch for: cranking resistance up to \"feel it\" — defeats the point of a warm-up.\n• Progress: none needed; keep this short and easy every session.",
   },
@@ -26,6 +27,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     section: "warmup",
     variantGroup: "warmup-cardio",
     notes: "Use when the bike's taken",
+    areasTrained: ["Full body", "warm-up"],
     howTo:
       "Leg swings front-to-back and side-to-side (10 each), bodyweight glute bridges × 10, walking lunges × 10, ankle circles.\n\n• Watch for: rushing through cold — move slow and controlled on the first few reps of each.\n• Use when the bike's taken; same purpose, get the joint moving and blood flowing before you lift.",
   },
@@ -37,56 +39,61 @@ export const DEFAULT_EXERCISES: Exercise[] = [
   {
     id: "single-leg-balance",
     name: "Single-leg balance",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "30-45",
     unit: "seconds",
     category: "strength",
     section: "core",
+    defaultSide: "injured",
     notes: "Progress to unstable surface or eyes closed",
+    areasTrained: ["Balance", "ankle/hip stabilizers"],
     howTo:
       "Stand on the injured leg near a wall or stable object for early support. Knee soft, not locked, weight spread across the whole foot, knee tracking over your 2nd/3rd toe — not caving inward toward the other leg (the classic ACL-injury position, worth checking in a mirror). Hips level, chest tall, eyes forward.\n\n• Watch for: locked knee, knee caving in, hips dropping or hiking on one side, bending so deep it turns into a squat.\n• Progress once steady for 30-45s: eyes closed, then an unstable surface (pillow/foam pad), then add arm/leg movement or catch a ball.\n\nYour physio's call on timing — especially how soon to drop the wall support and go single-leg — should come first; it depends on your surgery and stage.",
   },
   {
     id: "band-terminal-knee-extension",
     name: "Band terminal knee extension (TKE)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "15-20",
     unit: "reps",
     category: "strength",
     section: "core",
     notes: "Quad activation — classic early ACL drill",
+    areasTrained: ["Quads (VMO)"],
     howTo:
       "Loop a band around the back of the knee, anchored low in front (rack post or door). Put tension on the band before you start — no slack. Stand with a slight bend in the knee, then straighten it fully against the band, squeezing your quad hard at lockout.\n\n• Watch for: incomplete extension (stopping short of full lockout — that's the whole point of the move), hyperextending past straight, leaning forward to use momentum instead of the quad.\n• Progress: step further back for more tension once 15-20 reps feels controlled.",
   },
   {
     id: "mini-squat-vmo",
     name: "Mini-squat with VMO cue",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10-15",
     unit: "reps",
     category: "strength",
     section: "core",
     notes: "Closed-chain VMO work — safer than open-chain leg extension early on",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bodyweight_Squat/0.jpg",
+    areasTrained: ["Quads (VMO)"],
     howTo:
       "Feet shoulder-width, squat down to about 30-45° knee bend — well short of parallel. Press evenly through the whole foot and feel the inner quad (VMO) engage as you straighten back up.\n\n• Watch for: going too deep (turns it into a regular squat) or letting weight shift onto the toes.\n• Progress: add a light band around the knees, or hold light dumbbells, once bodyweight feels easy.",
   },
   {
     id: "short-arc-quad",
     name: "Short-arc quad (SAQ)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "15-20",
     unit: "reps",
     category: "strength",
     section: "core",
     notes: "VMO-focused quad activation — pairs well with TKE",
+    areasTrained: ["Quads (VMO)"],
     howTo:
       "Lie on your back with a rolled towel or small bolster under your knee. Straighten your knee fully over the roll without lifting your thigh off it, squeeze hard at lockout, lower slowly.\n\n• Watch for: the thigh lifting off the roll (turns it into a hip exercise) or rushing the last few degrees of lockout.\n• Progress: a light ankle weight once 15-20 reps feels easy, or move toward leg extension machine work.",
   },
   {
     id: "band-lateral-walks",
     name: "Band lateral walks (monster walk)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10-15 steps each way",
     unit: "reps",
     category: "strength",
@@ -94,26 +101,28 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "glute-activation",
     notes: "Glute medius — keeps the knee from caving in",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Monster_Walk/0.jpg",
+    areasTrained: ["Glutes", "hip abductors"],
     howTo:
       "Band around your ankles or just above the knees, feet hip-width, knees slightly bent. Step sideways keeping tension on the band the whole time.\n\n• Watch for: feet drifting back together between steps (loses tension), knee caving inward, standing too upright (reduces glute engagement).\n• Progress: drop the band lower (ankles vs above-knee) for more resistance, or add more steps each direction.",
   },
   {
     id: "clamshells",
     name: "Clamshells",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "15-20 each side",
     unit: "reps",
     category: "strength",
     section: "core",
     variantGroup: "glute-activation",
     notes: "Glute medius, no equipment needed",
+    areasTrained: ["Glutes", "hip abductors"],
     howTo:
       "Lie on your side, knees bent about 45°, feet together. Keeping feet touching, open your top knee like a clamshell by rotating at the hip.\n\n• Watch for: letting the pelvis roll backward to fake extra range — the rotation should come from the hip, not the spine.\n• Progress: add a mini-band above the knees once bodyweight feels easy.",
   },
   {
     id: "side-plank-hip-abduction",
     name: "Side plank with hip abduction",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "8-10 each side",
     unit: "reps",
     category: "strength",
@@ -121,13 +130,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "glute-activation",
     notes: "Core and glute medius together",
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Side_Plank.jpg",
+    areasTrained: ["Glutes", "core"],
     howTo:
       "Side plank on your forearm, knees straight, hips stacked. Lift your top leg up and down without letting your hips sag or rotate.\n\n• Watch for: hips dropping toward the floor or rotating open as the leg lifts.\n• Easier version: drop to your knees if a full plank isn't holdable with good form yet.",
   },
   {
     id: "hip-abductor-machine",
     name: "Hip abductor machine",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "12-15",
     unit: "reps",
     category: "strength",
@@ -135,13 +145,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "glute-activation",
     notes: "Glute medius with real resistance — a gym alternative to the band version",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Thigh_Abductor/0.jpg",
+    areasTrained: ["Glutes", "hip abductors"],
     howTo:
       "Sit with the pads against the outside of your knees. Push legs apart against the resistance, pause briefly, control the return.\n\n• Watch for: letting the weight stack slam back — that's momentum doing the work, not your glutes.\n• Progress: add load gradually once 12-15 reps feels controlled through the full range.",
   },
   {
     id: "hip-adductor-machine",
     name: "Hip adductor machine",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "12-15",
     unit: "reps",
     category: "strength",
@@ -149,26 +160,28 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "adductor-work",
     notes: "Inner thigh and groin — often skipped, but matters for knee stability",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Thigh_Adductor/0.jpg",
+    areasTrained: ["Inner thigh", "adductors"],
     howTo:
       "Sit with the pads against the inside of your knees, legs started apart. Squeeze together against the resistance, pause, let them open back out under control.\n\n• Watch for: rushing the eccentric (opening) phase — that's half the training effect.\n• Often skipped, but inner-thigh strength matters for knee stability — don't neglect it.",
   },
   {
     id: "ball-squeeze-adductor",
     name: "Ball squeeze (adductor)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10-15",
     unit: "seconds",
     category: "strength",
     section: "core",
     variantGroup: "adductor-work",
     notes: "No machine needed — a ball, pillow, or rolled towel works",
+    areasTrained: ["Inner thigh", "adductors"],
     howTo:
       "Lying or seated, place a ball (or pillow/rolled towel) between your knees. Squeeze and hold, feeling your inner thighs engage, then release slowly.\n\n• Watch for: using the hip flexors to \"help\" — the squeeze should come from the inner thigh only.\n• Progress: hold longer, or squeeze harder against a firmer ball.",
   },
   {
     id: "pallof-press",
     name: "Pallof press",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10-12 each side",
     unit: "reps",
     category: "strength",
@@ -176,26 +189,28 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "core-anti-rotation",
     notes: "Anti-rotation core — resist the band pulling you sideways",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pallof_Press/0.jpg",
+    areasTrained: ["Core"],
     howTo:
       "Anchor a band at chest height to your side. Hold it at your chest with both hands, step away to create tension, then press it straight out in front of you and back without letting your torso rotate toward the anchor.\n\n• Watch for: the band winning — any twist toward the anchor means it's too much tension or too fast a tempo.\n• Progress: step further from the anchor for more resistance.",
   },
   {
     id: "bird-dog",
     name: "Bird dog",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "8-10 each side",
     unit: "reps",
     category: "strength",
     section: "core",
     variantGroup: "core-anti-rotation",
     notes: "Core stability and balance, no equipment",
+    areasTrained: ["Core", "balance"],
     howTo:
       "On hands and knees, extend one arm and the opposite leg straight out until level with your torso, keeping your back flat and hips square. Hold briefly, return with control, switch sides.\n\n• Watch for: hips rotating open or the lower back arching as the leg extends.\n• Progress: pause longer at full extension, or add a light ankle weight.",
   },
   {
     id: "dead-bug",
     name: "Dead bug",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "8-10 each side",
     unit: "reps",
     category: "strength",
@@ -203,19 +218,21 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "core-anti-rotation",
     notes: "Core control, easier on the back than sit-ups",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dead_Bug/0.jpg",
+    areasTrained: ["Core"],
     howTo:
       "Lie on your back, arms up, knees bent 90° over your hips. Slowly lower one arm and the opposite leg toward the floor, return, switch sides.\n\n• Watch for: the lower back arching off the ground — that's the signal you've gone lower than your core can control.\n• Progress: lower the leg closer to the floor as control improves.",
   },
   {
     id: "glute-bridge",
     name: "Glute bridge / single-leg bridge",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10-15",
     unit: "reps",
     category: "strength",
     section: "core",
     notes: "Hamstrings and glutes",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Single_Leg_Glute_Bridge/0.jpg",
+    areasTrained: ["Glutes", "hamstrings"],
     howTo:
       "Lie on your back, knees bent, feet flat. Squeeze your glutes to lift your hips into a straight line from shoulder to knee.\n\n• Watch for: hyperextending the lower back instead of squeezing the glutes to get the lift.\n• Progress: single-leg version — keep the other knee pulled to your chest.",
   },
@@ -225,7 +242,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
   {
     id: "split-squat",
     name: "Split squat",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "8-12",
     unit: "reps",
     category: "strength",
@@ -234,13 +251,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "quad-compound-other",
     notes: "Progress with dumbbells",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Split_Squat_with_Dumbbells/0.jpg",
+    areasTrained: ["Quads", "glutes"],
     howTo:
       "Rear foot up on a bench (or just back behind you). Front knee tracks over your toes, lower until your back knee nearly touches the floor, push through your front heel. Keep your torso tall.\n\n• Watch for: front knee caving inward, or most of the weight shifting onto the back leg.\n• Progress: start bodyweight only — add dumbbells once form is solid through the full range.",
   },
   {
     id: "step-ups",
     name: "Step-ups",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10",
     unit: "reps",
     category: "strength",
@@ -249,13 +267,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "quad-compound-other",
     notes: "Raise box height over time",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Step_Ups/0.jpg",
+    areasTrained: ["Quads", "glutes"],
     howTo:
       "Step fully onto the box leading with your injured leg, driving through that leg rather than pushing off the back foot. Control the step back down, don't just drop.\n\n• Watch for: pushing off the trailing leg to cheat the rep — defeats the single-leg loading purpose.\n• Progress: raise box height over time as strength and control improve.",
   },
   {
     id: "single-leg-press",
     name: "Single-leg press",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "8-12",
     unit: "reps",
     category: "strength",
@@ -263,13 +282,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     mainFocus: "quad",
     notes: "Compare left vs right load",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/0.jpg",
+    areasTrained: ["Quads", "glutes"],
     howTo:
       "Seat set so your knee bends to about 90°. Press through your whole foot, not just your toes. Control the way back down.\n\n• Watch for: letting the weight stack slam at the bottom — control the eccentric.\n• Compare left vs right load — a persistent gap is worth flagging to your physio.",
   },
   {
     id: "hack-squat-machine",
     name: "Hack squat (machine)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "8-12",
     unit: "reps",
     category: "strength",
@@ -278,13 +298,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "quad-compound-other",
     notes: "Bilateral quad compound, on the 45° sled",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hack_Squat/0.jpg",
+    areasTrained: ["Quads"],
     howTo:
       "Shoulders under the pads, feet shoulder-width on the platform (a bit forward for more quad emphasis). Lower under control until your thighs are near parallel, drive through your whole foot back up.\n\n• Watch for: hips rounding off the pad at the bottom — that's a sign you've gone past your current range.\n• Progress: add load in small increments once full-range reps feel controlled.",
   },
   {
     id: "romanian-deadlift",
     name: "Romanian deadlift (barbell/Smith machine)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "8-10",
     unit: "reps",
     category: "strength",
@@ -293,13 +314,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "hip-hinge",
     notes: "Hamstring/glute hip hinge — hamstrings protect the ACL graft, worth tracking",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Romanian_Deadlift/0.jpg",
+    areasTrained: ["Hamstrings", "glutes"],
     howTo:
       "Bar in front of your thighs, soft knees. Hinge at the hips — push them straight back, bar staying close, almost scraping your legs, back flat, until a deep hamstring stretch — then drive your hips forward to stand.\n\n• Watch for: bending at the waist instead of the hips (rounds the back), or letting the bar drift away from your legs — the most common fault is turning the hinge into a squat by bending the knees too much.\n• Hamstrings protect the ACL graft, so this one's worth tracking load on over time.",
   },
   {
     id: "barbell-hip-thrust",
     name: "Hip thrust (barbell/machine)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "8-12",
     unit: "reps",
     category: "strength",
@@ -308,13 +330,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "hip-hinge",
     notes: "Glute strength — pairs well with quad/hamstring work for all-around knee support",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Barbell_Hip_Thrust/0.jpg",
+    areasTrained: ["Glutes"],
     howTo:
       "Upper back braced on a bench, bar or pad across your hips, feet flat shoulder-width. Drive through your heels, squeeze glutes hard at the top until hips are fully extended, lower under control.\n\n• Watch for: hyperextending the lower back at the top instead of squeezing glutes — the lockout should come from the hips, forming a straight line from shoulders to knees.\n• Progress: add load once full-range reps feel controlled and pain-free.",
   },
   {
     id: "cable-pull-through",
     name: "Cable pull-through",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10-15",
     unit: "reps",
     category: "strength",
@@ -323,13 +346,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "hip-hinge",
     notes: "Gym machine alternative to RDL — easier to learn the hip hinge pattern",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pull_Through/0.jpg",
+    areasTrained: ["Hamstrings", "glutes"],
     howTo:
       "Face away from the cable stack, rope between your legs. Hinge at the hips, letting the rope pull back between your legs, back flat, then squeeze your glutes to drive forward and stand tall.\n\n• Watch for: bending from the lower back instead of the hips — this is an easier pattern to learn than a barbell RDL for exactly that reason.\n• Progress: step further from the stack for more range, or add weight.",
   },
   {
     id: "walking-lunge-dumbbell",
     name: "Walking lunge (dumbbells)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10-12 each leg",
     unit: "reps",
     category: "strength",
@@ -338,13 +362,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "lunge-pattern",
     notes: "Sagittal-plane single-leg strength and control",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Lunges/0.jpg",
+    areasTrained: ["Quads", "glutes"],
     howTo:
       "Dumbbells at your sides, step forward into a lunge, back knee dropping close to the floor, push through your front heel into the next lunge. Keep your torso upright, front knee over the toes.\n\n• Watch for: front knee caving inward or drifting past the toes on the way down.\n• Progress: increase dumbbell weight once the pattern feels stable in both directions.",
   },
   {
     id: "lateral-lunge-dumbbell",
     name: "Lateral lunge (dumbbells)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10-12 each side",
     unit: "reps",
     category: "strength",
@@ -352,19 +377,21 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     mainFocus: "hip",
     variantGroup: "lunge-pattern",
     notes: "Side-to-side plane most ACL injuries happen in, but training often skips it",
+    areasTrained: ["Glutes", "inner thigh"],
     howTo:
       "Holding dumbbells, step wide to one side and sit back into that hip, keeping the other leg straight, chest up. Push off the bent leg to return to standing.\n\n• Watch for: the bent knee caving inward, or the torso leaning forward instead of sitting into the hip.\n• This side-to-side plane is where most ACL injuries happen, but training often skips it — don't.",
   },
   {
     id: "wall-sit",
     name: "Wall sit",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "30-45",
     unit: "seconds",
     category: "strength",
     section: "main",
     mainFocus: "quad",
     notes: "Quad isometric endurance",
+    areasTrained: ["Quads"],
     howTo:
       "Back against a wall, feet shoulder-width, slide down until your thighs are close to parallel, knees tracking over your toes, not caving in. Hold — breathe, don't hold your breath.\n\n• Watch for: knees drifting inward as fatigue sets in near the end of the hold.\n• Progress: add calf-raise pulses (rise onto your toes and back down) while staying in the hold, once the static hold feels easy.",
   },
@@ -375,44 +402,47 @@ export const DEFAULT_EXERCISES: Exercise[] = [
   {
     id: "hamstring-curls",
     name: "Hamstring curls",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "10-12",
     unit: "reps",
     category: "strength",
     section: "finisher",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Leg_Curls/0.jpg",
+    areasTrained: ["Hamstrings"],
     howTo:
       "Keep your hips pressed into the pad or floor the whole time. Curl through a full range without letting your hips lift.\n\n• Watch for: hips lifting off the pad to \"help\" the curl — that shifts work away from the hamstrings.\n• Progress: add load once full range feels controlled both directions.",
   },
   {
     id: "nordic-hamstring-curl",
     name: "Nordic hamstring curl (bench)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "4-6",
     unit: "reps",
     category: "strength",
     section: "finisher",
     notes: "Advanced — only once regular hamstring curls feel easy",
+    areasTrained: ["Hamstrings"],
     howTo:
       "Kneel on a pad with your ankles locked down (partner holds them, or use a Nordic bench/strap). Keeping a straight line from knees to shoulders, lower your torso forward as slowly as you can control, then push back up.\n\n• Watch for: hips piking/folding instead of staying in that straight line (the most common fault — it shortens the lever and takes load off the hamstrings), lower-back arching, or dropping/flopping instead of a slow lower.\n• Progress: if a controlled full lower isn't there yet, regress to an assisted version — a band around your chest, or catching yourself with your hands partway down — and shorten the assist over time rather than forcing the full range.\n\nHard on the knees for some people — check with your physio before adding this one if you have knee pain.",
   },
   {
     id: "leg-extension-machine",
     name: "Leg extension (machine)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "12-15",
     unit: "reps",
     category: "strength",
     section: "finisher",
     notes: "Quad isolation — start light, no need to rush the load",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Extensions/0.jpg",
+    areasTrained: ["Quads"],
     howTo:
       "Pad set just above your ankles, back against the seat. Extend your knees to full extension without slamming or kicking the last few degrees, pause briefly, lower slowly.\n\n• Watch for: rushing the top few degrees — that's the part most likely to aggravate the knee if you rush it.\n• Progress: start lighter than you think; add load slowly once the full range feels pain-free.",
   },
   {
     id: "standing-calf-raise",
     name: "Standing calf raise",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "15-20",
     unit: "reps",
     category: "strength",
@@ -420,13 +450,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "calf-raise",
     notes: "Bodyweight, straight-knee — gastrocnemius",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
+    areasTrained: ["Calves (gastrocnemius)"],
     howTo:
       "Stand on flat ground or a step edge, rise onto your toes as high as you can, pause, lower slow and controlled.\n\n• Watch for: bouncing at the bottom instead of pausing — the stretch at the bottom is part of the training effect.\n• Off a step: let your heels drop below the edge for a deeper stretch.",
   },
   {
     id: "calf-raise-machine",
     name: "Calf raise (standing machine)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "15-20",
     unit: "reps",
     category: "strength",
@@ -434,13 +465,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "calf-raise",
     notes: "Straight-knee — hits the gastrocnemius, with added load",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Smith_Machine_Calf_Raise/0.jpg",
+    areasTrained: ["Calves (gastrocnemius)"],
     howTo:
       "Shoulders under the pads, balls of your feet on the platform edge, rise onto your toes as high as you can (that's your gastrocnemius — the visible calf muscle — doing the work), pause at the top, lower under control past parallel for a full stretch.\n\n• Watch for: using knee bend to assist the rise — keep the knees straight throughout.\n• Progress: add load once full-range reps feel controlled.",
   },
   {
     id: "leg-press-calf-raise",
     name: "Calf raise on leg press (angled)",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "15-20",
     unit: "reps",
     category: "strength",
@@ -448,13 +480,14 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "calf-raise",
     notes: "Good option when the calf machine's taken",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Calf_Press_On_The_Leg_Press_Machine/0.jpg",
+    areasTrained: ["Calves (gastrocnemius)"],
     howTo:
       "On the leg press, legs almost straight, just the balls of your feet on the bottom edge of the platform. Push through your toes to extend your ankles, lower until a deep calf stretch.\n\n• Watch for: letting the knees bend to help — this variation is meant to stay straight-leg.\n• Good option when the calf machine's taken.",
   },
   {
     id: "seated-calf-raise",
     name: "Seated calf raise",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "15-20",
     unit: "reps",
     category: "strength",
@@ -462,19 +495,21 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     variantGroup: "calf-raise",
     notes: "Bent-knee — hits the soleus, which standing raises miss",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Calf_Raise/0.jpg",
+    areasTrained: ["Calves (soleus)"],
     howTo:
       "Sitting with knees bent about 90°, weight across your thighs (or seated calf machine), rise onto your toes and lower slowly under control.\n\n• Watch for: bouncing through reps instead of a controlled lower.\n• Bent-knee position hits the soleus, which standing raises miss — worth including both over a week.",
   },
   {
     id: "single-leg-calf-raise",
     name: "Single-leg calf raise",
-    defaultSets: 3,
+    defaultSets: 2,
     defaultReps: "12-15 each side",
     unit: "reps",
     category: "strength",
     section: "finisher",
     variantGroup: "calf-raise",
     notes: "Progression once double-leg raises feel easy — also shows side-to-side gaps",
+    areasTrained: ["Calves"],
     howTo:
       "Same motion as a standing calf raise, on one leg at a time. Hold something for balance if needed, but keep the actual lift strict.\n\n• Watch for: using the balance-assist hand to help push the rep up — it's there for balance only.\n• Good progression once double-leg raises feel easy, and shows up any side-to-side strength gap.",
   },
@@ -490,6 +525,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     category: "recovery",
     variantGroup: "recovery-cardio",
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Magnetic_resistance_stationary_bicycle_exercise_bike.JPG",
+    areasTrained: ["Legs", "cardio"],
     howTo:
       "Low resistance, easy spin. Goal is blood flow and joint lubrication, not effort — you should be able to hold a conversation the whole time.\n\n• Watch for: resistance creeping up out of habit — keep it genuinely easy on a recovery day.",
   },
@@ -502,6 +538,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     category: "recovery",
     variantGroup: "recovery-cardio",
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3b/Woman_walking_in_exercise_clothing_on_Como_lakefront.jpg",
+    areasTrained: ["Legs", "cardio"],
     howTo:
       "Flat ground, comfortable pace.\n\n• Watch for: hills or uneven ground if the knee's cranky — flat, predictable footing is the point today.\n• If the knee feels fine, this is a good way to fill a recovery day without loading it.",
   },
@@ -512,6 +549,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     defaultReps: "5-8",
     unit: "minutes",
     category: "recovery",
+    areasTrained: ["Quads", "IT band", "calves"],
     howTo:
       "Roll quads, IT band, and calves. Slow passes, pausing on tender spots for about 20-30 seconds.\n\n• Watch for: rolling directly over the kneecap or a surgical incision — stay on the muscle bellies.",
   },
@@ -522,6 +560,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     defaultReps: "8-10",
     unit: "minutes",
     category: "recovery",
+    areasTrained: ["Hips", "quads", "hamstrings", "calves"],
     howTo:
       "Gentle hip, quad, hamstring, and calf stretches.\n\n• Watch for: bouncing into a stretch or pushing into sharp pain — ease in and breathe through it, nothing should feel sharp.",
   },
@@ -533,6 +572,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "recovery",
     notes: "Knee flexion range of motion",
+    areasTrained: ["Knee flexion ROM"],
     howTo:
       "Lie on your back, heel in contact with the surface the whole time (a towel or sock under the heel cuts friction). Slide the heel toward your glutes by bending the knee as far as comfortable, hold a few seconds, slide back out. Use your hands or a strap around the foot to help pull it in if needed.\n\n• Watch for: letting the heel lift off the surface, or forcing extra range through pain — go by feel, stretch not pain.\n• Follow your physio's target flexion angle and brace-off instructions for your stage — these are very surgery- and timeline-specific early on.",
   },
@@ -544,6 +584,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "seconds",
     category: "recovery",
     notes: "Deep knee flexion — ease in, don't force it",
+    areasTrained: ["Knee flexion ROM"],
     howTo:
       "Kneel and slowly sit your hips back toward your heels, only as far as feels okay.\n\n• Watch for: forcing one big stretch — small, frequent doses beat that for regaining full knee bend after surgery.\n• Check with your physio before pushing this one if you're early post-op; deep flexion timing varies by procedure.",
   },
@@ -555,6 +596,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "recovery",
     notes: "Gravity-assisted knee bend — a good complement to heel slides",
+    areasTrained: ["Knee flexion ROM"],
     howTo:
       "Sit on the edge of a table or counter high enough that your feet are off the floor. Let the knee relax and bend under its own weight, tucking the other leg under it for light support if needed. Hold the stretch, then use the healthy leg to bring it back straight.\n\n• Watch for: sharp pain — aching and a gentle stretch are expected, sharp pain isn't.\n• Progress: less support from the other leg over time, and a few extra degrees of bend as tolerance improves.\n\nEarly post-op flexion range is surgeon/graft-specific — confirm your target angle and frequency with your physio before pushing it.",
   },
@@ -567,6 +609,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     category: "recovery",
     notes: "Tight hip flexors are common after months of altered gait",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Kneeling_Hip_Flexor/0.jpg",
+    areasTrained: ["Hip flexors"],
     howTo:
       "Half-kneeling position, back knee down, front foot forward. Tuck your pelvis slightly and shift your weight forward until you feel a stretch in the front of the back hip — squeeze that back glute to deepen it.\n\n• Watch for: arching the lower back instead of tucking the pelvis — that fakes range without actually stretching the hip flexor.\n• Tight hip flexors are common after months of altered gait, so this one's easy to under-rate.",
   },
@@ -578,3 +621,38 @@ export const DEFAULT_READINESS: ReadinessState = {
   strength90Percent: false,
   painFreeJogging: false,
 };
+
+// DEFAULT_EXERCISES only seeds a browser that has nothing in localStorage
+// yet — a returning user's stored copy never picks up later additions to
+// this file on its own (see `[[add-exercise]]`/`[[data-model]]`). This
+// one-time migration (run from useLocalStorage's migrate hook) closes that
+// gap for the two safe cases: backfilling fields that didn't exist yet when
+// an exercise was first saved, and appending brand-new catalog exercises the
+// user doesn't have at all. It never touches a field the user — or an
+// earlier version of this catalog — already set, so edits made via the Plan
+// page (including intentionally keeping an old value) are never overwritten.
+export function migrateExercises(stored: Exercise[]): Exercise[] {
+  const defaultsById = new Map(DEFAULT_EXERCISES.map((e) => [e.id, e]));
+  const storedIds = new Set(stored.map((e) => e.id));
+  let changed = false;
+
+  const merged = stored.map((ex) => {
+    const def = defaultsById.get(ex.id);
+    if (!def) return ex; // user's own custom exercise — leave untouched
+
+    const patch: Partial<Exercise> = {};
+    if (ex.imageUrl === undefined && def.imageUrl !== undefined) patch.imageUrl = def.imageUrl;
+    if (ex.areasTrained === undefined && def.areasTrained !== undefined) patch.areasTrained = def.areasTrained;
+    if (ex.mainFocus === undefined && def.mainFocus !== undefined) patch.mainFocus = def.mainFocus;
+    if (ex.defaultSide === undefined && def.defaultSide !== undefined) patch.defaultSide = def.defaultSide;
+
+    if (Object.keys(patch).length === 0) return ex;
+    changed = true;
+    return { ...ex, ...patch };
+  });
+
+  const newExercises = DEFAULT_EXERCISES.filter((d) => !storedIds.has(d.id));
+  if (newExercises.length > 0) changed = true;
+
+  return changed ? [...merged, ...newExercises] : stored;
+}

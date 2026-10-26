@@ -40,9 +40,11 @@ export interface Exercise {
   archived?: boolean;
   category?: ExerciseCategory; // missing = "strength", for exercises saved before this field existed
   howTo?: string; // how-to-do-it / form cues, shown as a collapsible tip; "\n" for line breaks (rendered via whitespace-pre-line)
+  areasTrained?: string[]; // muscle groups / areas this exercise targets, shown atop the How-to panel
   imageUrl?: string; // external demo image URL, shown in the same collapsible tip — never hosted in this repo
   section?: ExerciseSection; // missing = "main"; only used to group strength exercises in the UI
   mainFocus?: MainFocus; // only used for section "main" — see MainFocus
+  defaultSide?: Side; // missing = "both"; set this when an exercise is inherently done on one leg (e.g. single-leg balance targets the injured leg specifically)
   variantGroup?: string; // exercises sharing this tag are interchangeable — only one shows per day, rotating
 }
 

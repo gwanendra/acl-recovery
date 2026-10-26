@@ -23,6 +23,7 @@ export default function ExerciseForm({
   const [section, setSection] = useState<ExerciseSection>(initial?.section ?? "main");
   const [notes, setNotes] = useState(initial?.notes ?? "");
   const [howTo, setHowTo] = useState(initial?.howTo ?? "");
+  const [areasTrained, setAreasTrained] = useState(initial?.areasTrained?.join(", ") ?? "");
   const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? "");
   const [variantGroup, setVariantGroup] = useState(initial?.variantGroup ?? "");
 
@@ -39,6 +40,12 @@ export default function ExerciseForm({
       section: category === "strength" ? section : undefined,
       notes: notes.trim() || undefined,
       howTo: howTo.trim() || undefined,
+      areasTrained: areasTrained.trim()
+        ? areasTrained
+            .split(",")
+            .map((a) => a.trim())
+            .filter(Boolean)
+        : undefined,
       imageUrl: imageUrl.trim() || undefined,
       variantGroup: variantGroup.trim() || undefined,
       archived: initial?.archived,
@@ -100,6 +107,13 @@ export default function ExerciseForm({
       )}
       <Field label="Notes (optional)">
         <TextInput value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional" />
+      </Field>
+      <Field label="Areas trained (optional)">
+        <TextInput
+          value={areasTrained}
+          onChange={(e) => setAreasTrained(e.target.value)}
+          placeholder="e.g. Glutes, hip abductors"
+        />
       </Field>
       <Field label="How to do it (optional)">
         <Textarea

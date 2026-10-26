@@ -77,7 +77,9 @@ export function pickDailyExercises(exercises: Exercise[], sessions: Session[]): 
 
 function pickNextInGroup(group: Exercise[], sessions: Session[]): Exercise {
   const groupIds = new Set(group.map((e) => e.id));
-  const sortedSessions = sessions.slice().sort((a, b) => b.date.localeCompare(a.date));
+  const sortedSessions = sessions
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
 
   for (const session of sortedSessions) {
     const loggedId = session.exercises.find((log) => groupIds.has(log.exerciseId))?.exerciseId;

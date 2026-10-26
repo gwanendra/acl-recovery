@@ -149,6 +149,11 @@ export default function PlanPage() {
                       <summary className="cursor-pointer text-xs font-medium text-emerald-600 dark:text-emerald-400">
                         How to
                       </summary>
+                      {ex.areasTrained && ex.areasTrained.length > 0 && (
+                        <p className="mt-1 mb-3 text-xs text-zinc-600 dark:text-zinc-300">
+                          Works: <span className="font-bold">{ex.areasTrained.join(", ")}</span>
+                        </p>
+                      )}
                       {ex.imageUrl && (
                         // eslint-disable-next-line @next/next/no-img-element -- external, unhosted demo image
                         <img

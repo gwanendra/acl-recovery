@@ -75,9 +75,11 @@ export default function Home() {
   const [sessions, , sessionsHydrated] = useSessions();
   const [readiness, , readinessHydrated] = useReadiness();
   const [modeOverride, setModeOverride] = useState<Mode | null>(null);
-  // Picked client-side only (not during prerender) so it's a fresh random line each visit.
+  // Picked client-side only (not during prerender) so it's a fresh random line
+  // each visit instead of one random pick frozen into the static HTML.
   const [hypeLine, setHypeLine] = useState(HYPE_LINES[0]);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- must run post-mount to differ from the prerendered snapshot
     setHypeLine(HYPE_LINES[Math.floor(Math.random() * HYPE_LINES.length)]);
   }, []);
 
@@ -262,6 +264,11 @@ function ExerciseCard({ ex }: { ex: Exercise }) {
           <summary className="cursor-pointer text-xs font-medium text-emerald-600 dark:text-emerald-400">
             How to
           </summary>
+          {ex.areasTrained && ex.areasTrained.length > 0 && (
+            <p className="mt-1 mb-3 text-xs text-zinc-600 dark:text-zinc-300">
+              Works: <span className="font-bold">{ex.areasTrained.join(", ")}</span>
+            </p>
+          )}
           {ex.imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element -- external, unhosted demo image
             <img

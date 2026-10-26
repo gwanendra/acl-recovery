@@ -2,14 +2,30 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-export function useLocalStorage<T>(key: string, initialValue: T) {
+// `migrate` runs once against whatever was already in storage right after
+// it's parsed — e.g. backfilling fields a stored record predates. If it
+// returns a different value (by reference), the migrated version is written
+// straight back so this doesn't re-run every load.
+export function useLocalStorage<T>(key: string, initialValue: T, migrate?: (value: T) => T) {
   const [value, setValue] = useState<T>(initialValue);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(key);
-      if (raw) setValue(JSON.parse(raw) as T);
+      if (raw) {
+        const parsed = JSON.parse(raw) as T;
+        const migrated = migrate ? migrate(parsed) : parsed;
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing from localStorage, a client-only external source read here on purpose
+        setValue(migrated);
+        if (migrated !== parsed) {
+          try {
+            window.localStorage.setItem(key, JSON.stringify(migrated));
+          } catch {
+            // ignore quota / private-mode errors
+          }
+        }
+      }
     } catch {
       // ignore corrupt storage
     }

@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useSessions } from "@/lib/store";
+import { useExercises, useSessions } from "@/lib/store";
 import { logLoad, sessionType, shouldWarn } from "@/lib/calc";
-import type { SessionType } from "@/lib/types";
+import { unitLabel, type Side, type SessionType } from "@/lib/types";
 import { Button, Card, PageTitle } from "@/components/ui";
 
 const TYPE_LABEL: Record<SessionType, string> = {
@@ -19,12 +19,20 @@ const TYPE_BADGE_CLASS: Record<SessionType, string> = {
   rest: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300",
 };
 
+const SIDE_LABEL: Record<Side, string> = {
+  both: "both legs",
+  injured: "injured",
+  healthy: "healthy",
+};
+
 export default function LogPage() {
   const [sessions, setSessions, hydrated] = useSessions();
+  const [exercises, , exercisesHydrated] = useExercises();
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  if (!hydrated) return <p className="text-sm text-zinc-400">Loading…</p>;
+  if (!hydrated || !exercisesHydrated) return <p className="text-sm text-zinc-400">Loading…</p>;
 
+  const exerciseById = new Map(exercises.map((ex) => [ex.id, ex]));
   const sorted = sessions.slice().sort((a, b) => b.date.localeCompare(a.date));
 
   function removeSession(id: string) {
@@ -78,18 +86,29 @@ export default function LogPage() {
 
                 {open && (
                   <div className="mt-3 flex flex-col gap-2 border-t border-zinc-100 pt-3 dark:border-zinc-800">
-                    {session.exercises.map((log) => (
-                      <div key={log.exerciseId} className="text-sm">
-                        <p className="font-medium">{log.exerciseName}</p>
-                        <ul className="ml-3 list-disc text-xs text-zinc-500 dark:text-zinc-400">
-                          {log.sets.map((s) => (
-                            <li key={s.id}>
-                              {s.reps} reps × {s.weight}kg ({s.side}) — load {logLoad({ ...log, sets: [s] })}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+                    {session.exercises.map((log) => {
+                      const ex = exerciseById.get(log.exerciseId);
+                      const unit = ex?.unit ?? "reps";
+                      return (
+                        <div key={log.exerciseId} className="text-sm">
+                          <p className="font-medium">{log.exerciseName}</p>
+                          <ul className="ml-3 list-disc text-xs text-zinc-500 dark:text-zinc-400">
+                            {log.sets.map((s) => (
+                              <li key={s.id}>
+                                {s.reps} {unitLabel(unit)}
+                                {unit !== "minutes" && (
+                                  <>
+                                    {" "}
+                                    · {s.weight > 0 ? `${s.weight}kg` : "bodyweight"} · {SIDE_LABEL[s.side]}
+                                    {s.weight > 0 && ` · load ${logLoad({ ...log, sets: [s] })}`}
+                                  </>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      );
+                    })}
                     {session.notes && (
                       <p className="text-xs italic text-zinc-500 dark:text-zinc-400">&ldquo;{session.notes}&rdquo;</p>
                     )}

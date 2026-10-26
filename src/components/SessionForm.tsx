@@ -7,8 +7,8 @@ import { exerciseSection, todayIso } from "@/lib/calc";
 import { newId } from "@/lib/useLocalStorage";
 import { Button, Card, Field, Select, TextInput } from "@/components/ui";
 
-function emptySet() {
-  return { id: newId(), reps: 0, weight: 0, side: "both" as Side };
+function emptySet(side: Side = "both") {
+  return { id: newId(), reps: 0, weight: 0, side };
 }
 
 // "8-12" -> 8, "30-45" -> 30, "10-15 steps each way" -> 10. Falls back to 0
@@ -61,7 +61,12 @@ export default function SessionForm({
         sets: [
           prefill
             ? { id: newId(), reps: prefill.reps, weight: prefill.weight, side: prefill.side }
-            : { id: newId(), reps: parseDefaultReps(ex.defaultReps), weight: 0, side: "both" as Side },
+            : {
+                id: newId(),
+                reps: parseDefaultReps(ex.defaultReps),
+                weight: 0,
+                side: ex.defaultSide ?? "both",
+              },
         ],
       };
     })
@@ -104,9 +109,12 @@ export default function SessionForm({
   }
 
   function addSet(exerciseId: string) {
+    const defaultSide = exercises.find((e) => e.id === exerciseId)?.defaultSide;
     setLogs((prev) =>
       prev.map((log) =>
-        log.exerciseId === exerciseId ? { ...log, sets: [...log.sets, emptySet()] } : log
+        log.exerciseId === exerciseId
+          ? { ...log, sets: [...log.sets, emptySet(defaultSide)] }
+          : log
       )
     );
   }
@@ -206,6 +214,11 @@ export default function SessionForm({
                 <summary className="cursor-pointer text-xs font-medium text-emerald-600 dark:text-emerald-400">
                   How to
                 </summary>
+                {exercise.areasTrained && exercise.areasTrained.length > 0 && (
+                  <p className="mt-1 mb-3 text-xs text-zinc-600 dark:text-zinc-300">
+                    Works: <span className="font-bold">{exercise.areasTrained.join(", ")}</span>
+                  </p>
+                )}
                 {exercise.imageUrl && (
                   // eslint-disable-next-line @next/next/no-img-element -- external, unhosted demo image
                   <img
@@ -228,40 +241,54 @@ export default function SessionForm({
                   {log.sets.map((set, idx) => (
                     <div key={set.id} className="flex items-center gap-2">
                       <span className="w-5 shrink-0 text-xs text-zinc-400">{idx + 1}</span>
-                      <TextInput
-                        type="number"
-                        min={0}
-                        value={set.reps === 0 ? "" : set.reps}
-                        onChange={(e) =>
-                          updateSet(log.exerciseId, set.id, {
-                            reps: e.target.value === "" ? 0 : Number(e.target.value),
-                          })
-                        }
-                        placeholder={exercise ? unitLabel(exercise.unit) : "reps"}
-                        className="w-16"
-                      />
-                      <TextInput
-                        type="number"
-                        min={0}
-                        step={0.5}
-                        value={set.weight === 0 ? "" : set.weight}
-                        onChange={(e) =>
-                          updateSet(log.exerciseId, set.id, {
-                            weight: e.target.value === "" ? 0 : Number(e.target.value),
-                          })
-                        }
-                        placeholder="kg"
-                        className="w-16"
-                      />
-                      <Select
-                        value={set.side}
-                        onChange={(e) => updateSet(log.exerciseId, set.id, { side: e.target.value as Side })}
-                        className="flex-1"
-                      >
-                        <option value="both">Both legs</option>
-                        <option value="injured">Injured</option>
-                        <option value="healthy">Healthy</option>
-                      </Select>
+                      <div className="flex w-20 shrink-0 items-center gap-1">
+                        <TextInput
+                          type="number"
+                          min={0}
+                          value={set.reps === 0 ? "" : set.reps}
+                          onChange={(e) =>
+                            updateSet(log.exerciseId, set.id, {
+                              reps: e.target.value === "" ? 0 : Number(e.target.value),
+                            })
+                          }
+                          placeholder="0"
+                          className="w-full"
+                        />
+                        <span className="shrink-0 text-xs text-zinc-400">
+                          {exercise ? unitLabel(exercise.unit) : "reps"}
+                        </span>
+                      </div>
+                      {exercise?.unit !== "minutes" && (
+                        <>
+                          <div className="flex w-20 shrink-0 items-center gap-1">
+                            <TextInput
+                              type="number"
+                              min={0}
+                              step={0.5}
+                              value={set.weight === 0 ? "" : set.weight}
+                              onChange={(e) =>
+                                updateSet(log.exerciseId, set.id, {
+                                  weight: e.target.value === "" ? 0 : Number(e.target.value),
+                                })
+                              }
+                              placeholder="0"
+                              className="w-full"
+                            />
+                            <span className="shrink-0 text-xs text-zinc-400">kg</span>
+                          </div>
+                          <Select
+                            value={set.side}
+                            onChange={(e) =>
+                              updateSet(log.exerciseId, set.id, { side: e.target.value as Side })
+                            }
+                            className="flex-1"
+                          >
+                            <option value="both">Both legs</option>
+                            <option value="injured">Injured</option>
+                            <option value="healthy">Healthy</option>
+                          </Select>
+                        </>
+                      )}
                       <button
                         type="button"
                         onClick={() => removeSet(log.exerciseId, set.id)}
@@ -301,7 +328,8 @@ export default function SessionForm({
                     <p key={set.id}>
                       {log.sets.length > 1 ? `${idx + 1}. ` : ""}
                       {set.reps} {unitLabel(exercise?.unit ?? "reps")}
-                      {set.weight > 0 ? ` · ${set.weight}kg` : " · bodyweight"} · {SIDE_LABEL[set.side]}
+                      {exercise?.unit !== "minutes" &&
+                        (set.weight > 0 ? ` · ${set.weight}kg` : " · bodyweight") + ` · ${SIDE_LABEL[set.side]}`}
                     </p>
                   ))
                 )}
