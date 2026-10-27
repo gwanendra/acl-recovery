@@ -2,7 +2,7 @@ export type Side = "injured" | "healthy" | "both";
 export type Swelling = "none" | "mild" | "moderate";
 export type Unit = "reps" | "seconds" | "minutes";
 export type ExerciseCategory = "strength" | "recovery";
-export type SessionType = "train" | "recovery" | "rest";
+export type SessionType = "train" | "recovery" | "rest" | "relax";
 
 // Groups strength exercises into the order a training day actually flows in.
 // Only meaningful for category: "strength" — recovery days aren't sectioned.
@@ -46,6 +46,7 @@ export interface Exercise {
   mainFocus?: MainFocus; // only used for section "main" — see MainFocus
   defaultSide?: Side; // missing = "both"; set this when an exercise is inherently done on one leg (e.g. single-leg balance targets the injured leg specifically)
   variantGroup?: string; // exercises sharing this tag are interchangeable — only one shows per day, rotating
+  essential?: boolean; // survives the trim on a "relax" day (see pickDailyExercises) — reserve for the few exercises worth doing even on a short day
 }
 
 export interface SetEntry {

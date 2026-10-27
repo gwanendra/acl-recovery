@@ -11,16 +11,18 @@ const TITLE: Record<SessionType, string> = {
   train: "Log training",
   recovery: "Log recovery",
   rest: "Log rest day",
+  relax: "Log relax day",
 };
 
 const SUBTITLE: Record<SessionType, string> = {
   train: "Record sets, reps, and weight.",
   recovery: "Light work — log what you did and how it felt.",
   rest: "No training today — just log how you're feeling.",
+  relax: "A short session — just the essentials, nothing else.",
 };
 
 function readType(value: string | null): SessionType {
-  return value === "recovery" || value === "rest" ? value : "train";
+  return value === "recovery" || value === "rest" || value === "relax" ? value : "train";
 }
 
 export default function NewSessionClient() {
@@ -45,7 +47,7 @@ export default function NewSessionClient() {
       ? []
       : exercises.filter((e) => !e.archived && exerciseCategory(e) === categoryForMode(type));
   // Same rotation as the home screen, so what you log here matches what it showed you.
-  const relevantExercises = pickDailyExercises(categoryFiltered, sessions);
+  const relevantExercises = pickDailyExercises(categoryFiltered, sessions, { relax: type === "relax" });
 
   return (
     <div className="flex flex-col gap-4">

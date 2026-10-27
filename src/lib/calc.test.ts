@@ -153,6 +153,41 @@ describe("pickDailyExercises", () => {
     const picks = pickDailyExercises(exercises, sessions);
     expect(picks.map((e) => e.id)).toEqual(["quad-lift"]);
   });
+
+  it("relax mode trims to warm-up + essential exercises only", () => {
+    const exercises = [
+      exercise({ id: "bike", section: "warmup" }),
+      exercise({ id: "balance", section: "core", essential: true }),
+      exercise({ id: "other-core", section: "core" }),
+      exercise({ id: "press", section: "main", mainFocus: "quad", essential: true }),
+      exercise({ id: "other-main", section: "main" }),
+      exercise({ id: "finisher-move", section: "finisher" }),
+    ];
+    const picks = pickDailyExercises(exercises, [], { relax: true });
+    expect(picks.map((e) => e.id).sort()).toEqual(["balance", "bike", "press"]);
+  });
+
+  it("relax mode keeps an essential main exercise regardless of today's mainFocus", () => {
+    const exercises = [
+      exercise({ id: "quad-press", section: "main", mainFocus: "quad", essential: true }),
+      exercise({ id: "hip-lift", section: "main", mainFocus: "hip" }),
+    ];
+    const sessions = [
+      session({
+        id: "s1",
+        date: "2026-01-01",
+        createdAt: "2026-01-01T10:00:00.000Z",
+        exercises: [loggedExercise("quad-press")],
+      }),
+    ];
+    // A normal train day would flip to "hip" here and drop quad-press entirely.
+    const trainPicks = pickDailyExercises(exercises, sessions);
+    expect(trainPicks.map((e) => e.id)).toEqual(["hip-lift"]);
+
+    // Relax mode skips that filter, so the essential quad exercise survives.
+    const relaxPicks = pickDailyExercises(exercises, sessions, { relax: true });
+    expect(relaxPicks.map((e) => e.id)).toEqual(["quad-press"]);
+  });
 });
 
 describe("mainFocusForToday", () => {

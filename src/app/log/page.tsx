@@ -11,12 +11,14 @@ const TYPE_LABEL: Record<SessionType, string> = {
   train: "Train",
   recovery: "Recovery",
   rest: "Rest",
+  relax: "Relax",
 };
 
 const TYPE_BADGE_CLASS: Record<SessionType, string> = {
   train: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
   recovery: "bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300",
   rest: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300",
+  relax: "bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300",
 };
 
 const SIDE_LABEL: Record<Side, string> = {

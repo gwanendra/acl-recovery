@@ -50,15 +50,28 @@ export function mainFocusForToday(exercises: Exercise[], sessions: Session[]): M
 // defaults to the first in the list if the group has never been logged.
 // Main-section exercises tagged with `mainFocus` are filtered to today's
 // focus first (see mainFocusForToday) — untagged exercises are unaffected.
-export function pickDailyExercises(exercises: Exercise[], sessions: Session[]): Exercise[] {
-  const focus = mainFocusForToday(exercises, sessions);
-  const focused = exercises.filter((ex) => !ex.mainFocus || ex.mainFocus === focus);
+//
+// `relax: true` (a short "relax day" session) skips the mainFocus filter
+// entirely — that split exists to manage a full train day's time budget,
+// which doesn't apply once the list is about to be trimmed way down anyway,
+// and skipping it means an always-relevant exercise like single-leg-press
+// doesn't vanish just because today happens to land on the "wrong" half of
+// the quad/hip split. After the normal rotation picks are computed, the
+// result is trimmed to warm-up exercises plus anything marked `essential`.
+export function pickDailyExercises(
+  exercises: Exercise[],
+  sessions: Session[],
+  opts?: { relax?: boolean }
+): Exercise[] {
+  const base = opts?.relax
+    ? exercises
+    : exercises.filter((ex) => !ex.mainFocus || ex.mainFocus === mainFocusForToday(exercises, sessions));
 
-  const order = new Map(focused.map((e, i) => [e.id, i]));
+  const order = new Map(base.map((e, i) => [e.id, i]));
   const groups = new Map<string, Exercise[]>();
   const picks: Exercise[] = [];
 
-  for (const ex of focused) {
+  for (const ex of base) {
     if (!ex.variantGroup) {
       picks.push(ex);
       continue;
@@ -72,7 +85,10 @@ export function pickDailyExercises(exercises: Exercise[], sessions: Session[]): 
     picks.push(group.length === 1 ? group[0] : pickNextInGroup(group, sessions));
   }
 
-  return picks.sort((a, b) => order.get(a.id)! - order.get(b.id)!);
+  const sorted = picks.sort((a, b) => order.get(a.id)! - order.get(b.id)!);
+  if (!opts?.relax) return sorted;
+
+  return sorted.filter((ex) => ex.essential || exerciseSection(ex) === "warmup");
 }
 
 function pickNextInGroup(group: Exercise[], sessions: Session[]): Exercise {
@@ -92,10 +108,12 @@ function pickNextInGroup(group: Exercise[], sessions: Session[]): Exercise {
   return group[0];
 }
 
-// "train"/"recovery" day modes map to "strength"/"recovery" exercise categories —
-// the names differ (a session you log vs. an exercise you file), don't compare them directly.
-export function categoryForMode(mode: "train" | "recovery"): ExerciseCategory {
-  return mode === "train" ? "strength" : "recovery";
+// "train"/"recovery"/"relax" day modes map to "strength"/"recovery" exercise
+// categories — the names differ (a session you log vs. an exercise you
+// file), don't compare them directly. "relax" is a trimmed-down strength
+// session (see pickDailyExercises' relax option), not the recovery category.
+export function categoryForMode(mode: "train" | "recovery" | "relax"): ExerciseCategory {
+  return mode === "recovery" ? "recovery" : "strength";
 }
 
 export function sessionType(session: Session): SessionType {

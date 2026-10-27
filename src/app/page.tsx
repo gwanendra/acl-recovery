@@ -25,30 +25,40 @@ import {
 import WarningBanner from "@/components/WarningBanner";
 import { Button, Card, PageTitle } from "@/components/ui";
 
-const MODES = ["train", "recovery", "rest"] as const;
+const MODES = ["train", "recovery", "relax", "rest"] as const;
 type Mode = (typeof MODES)[number];
 
 const MODE_LABEL: Record<Mode, string> = {
   train: "Train",
   recovery: "Recovery",
+  relax: "Relax",
   rest: "Rest",
 };
 
 const MODE_HINT: Record<Mode, string> = {
   train: "Strength day — lift with control, push effort, but stop if pain climbs.",
   recovery: "Active recovery — light movement only, keep the leg moving without loading it hard.",
+  relax: "Short session — just the essentials, nothing else. For a day you still want to show up but keep it brief.",
   rest: "Full rest — no training. This is what lets yesterday's work turn into strength.",
 };
 
 const CTA_LABEL: Record<Mode, string> = {
   train: "Start training",
   recovery: "Start recovery session",
+  relax: "Start relax session",
   rest: "Log rest day",
+};
+
+const EXERCISE_LABEL: Record<Exclude<Mode, "rest">, string> = {
+  train: "Strength exercises",
+  recovery: "Recovery exercises",
+  relax: "Relax exercises",
 };
 
 const LOGGED_LABEL: Record<SessionType, string> = {
   train: "a training session",
   recovery: "a recovery session",
+  relax: "a relax session",
   rest: "a rest day",
 };
 
@@ -103,7 +113,7 @@ export default function Home() {
     ? categoryFiltered.filter((ex) =>
         todaySession.exercises.some((log) => log.exerciseId === ex.id)
       )
-    : pickDailyExercises(categoryFiltered, sessions);
+    : pickDailyExercises(categoryFiltered, sessions, { relax: mode === "relax" });
 
   const sections: { section: (typeof SECTION_ORDER)[number]; items: Exercise[] }[] =
     mode === "train"
@@ -145,7 +155,7 @@ export default function Home() {
         ) : (
           <>
             <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">{MODE_HINT[mode]}</p>
-            <div className="mt-3 grid grid-cols-3 gap-2">
+            <div className="mt-3 grid grid-cols-4 gap-2">
               {MODES.map((m) => (
                 <button
                   key={m}
@@ -207,7 +217,7 @@ export default function Home() {
         <>
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-zinc-600 dark:text-zinc-300">
-              {mode === "train" ? "Strength exercises" : "Recovery exercises"} ({filtered.length})
+              {EXERCISE_LABEL[mode]} ({filtered.length})
             </h2>
             <Link href="/plan" className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
               Edit plan
@@ -217,7 +227,7 @@ export default function Home() {
           {filtered.length === 0 ? (
             <Card>
               <p className="text-sm text-zinc-500">
-                No {mode === "train" ? "strength" : "recovery"} exercises yet.
+                No {EXERCISE_LABEL[mode].toLowerCase()} yet.
               </p>
               <Link href="/plan">
                 <Button className="mt-3">Add exercises</Button>

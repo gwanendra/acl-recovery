@@ -45,6 +45,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     category: "strength",
     section: "core",
     defaultSide: "injured",
+    essential: true,
     notes: "Progress to unstable surface or eyes closed",
     areasTrained: ["Balance", "ankle/hip stabilizers"],
     howTo:
@@ -58,6 +59,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "core",
+    variantGroup: "quad-activation-core",
     notes: "Quad activation — classic early ACL drill",
     areasTrained: ["Quads (VMO)"],
     howTo:
@@ -71,6 +73,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "core",
+    variantGroup: "quad-activation-core",
     notes: "Closed-chain VMO work — safer than open-chain leg extension early on",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Bodyweight_Squat/0.jpg",
     areasTrained: ["Quads (VMO)"],
@@ -85,7 +88,8 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "core",
-    notes: "VMO-focused quad activation — pairs well with TKE",
+    variantGroup: "quad-activation-core",
+    notes: "VMO-focused quad activation — rotates with TKE and mini-squat so you're not doing all three every session",
     areasTrained: ["Quads (VMO)"],
     howTo:
       "Lie on your back with a rolled towel or small bolster under your knee. Straighten your knee fully over the roll without lifting your thigh off it, squeeze hard at lockout, lower slowly.\n\n• Watch for: the thigh lifting off the roll (turns it into a hip exercise) or rushing the last few degrees of lockout.\n• Progress: a light ankle weight once 15-20 reps feels easy, or move toward leg extension machine work.",
@@ -230,6 +234,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "core",
+    essential: true,
     notes: "Hamstrings and glutes",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Single_Leg_Glute_Bridge/0.jpg",
     areasTrained: ["Glutes", "hamstrings"],
@@ -247,6 +252,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "main",
+    essential: true,
     mainFocus: "quad",
     variantGroup: "quad-compound-other",
     notes: "Progress with dumbbells",
@@ -263,6 +269,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "main",
+    essential: true,
     mainFocus: "quad",
     variantGroup: "quad-compound-other",
     notes: "Raise box height over time",
@@ -280,6 +287,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     category: "strength",
     section: "main",
     mainFocus: "quad",
+    essential: true,
     notes: "Compare left vs right load",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Leg_Press/0.jpg",
     areasTrained: ["Quads", "glutes"],
@@ -294,6 +302,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "main",
+    essential: true,
     mainFocus: "quad",
     variantGroup: "quad-compound-other",
     notes: "Bilateral quad compound, on the 45° sled",
@@ -389,8 +398,10 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "seconds",
     category: "strength",
     section: "main",
+    essential: true,
     mainFocus: "quad",
-    notes: "Quad isometric endurance",
+    variantGroup: "quad-compound-other",
+    notes: "Quad isometric endurance — rotates with split-squat/step-ups/hack-squat",
     areasTrained: ["Quads"],
     howTo:
       "Back against a wall, feet shoulder-width, slide down until your thighs are close to parallel, knees tracking over your toes, not caving in. Hold — breathe, don't hold your breath.\n\n• Watch for: knees drifting inward as fatigue sets in near the end of the hold.\n• Progress: add calf-raise pulses (rise onto your toes and back down) while staying in the hold, once the static hold feels easy.",
@@ -407,6 +418,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "finisher",
+    essential: true,
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Leg_Curls/0.jpg",
     areasTrained: ["Hamstrings"],
     howTo:
@@ -420,7 +432,8 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "finisher",
-    notes: "Advanced — only once regular hamstring curls feel easy",
+    archived: true,
+    notes: "Advanced — only once regular hamstring curls feel easy. Parked out of the daily rotation for now; un-archive from the Plan page when ready.",
     areasTrained: ["Hamstrings"],
     howTo:
       "Kneel on a pad with your ankles locked down (partner holds them, or use a Nordic bench/strap). Keeping a straight line from knees to shoulders, lower your torso forward as slowly as you can control, then push back up.\n\n• Watch for: hips piking/folding instead of staying in that straight line (the most common fault — it shortens the lever and takes load off the hamstrings), lower-back arching, or dropping/flopping instead of a slow lower.\n• Progress: if a controlled full lower isn't there yet, regress to an assisted version — a band around your chest, or catching yourself with your hands partway down — and shorten the assist over time rather than forcing the full range.\n\nHard on the knees for some people — check with your physio before adding this one if you have knee pain.",
@@ -447,6 +460,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "finisher",
+    essential: true,
     variantGroup: "calf-raise",
     notes: "Bodyweight, straight-knee — gastrocnemius",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Standing_Calf_Raises/0.jpg",
@@ -462,6 +476,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "finisher",
+    essential: true,
     variantGroup: "calf-raise",
     notes: "Straight-knee — hits the gastrocnemius, with added load",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Smith_Machine_Calf_Raise/0.jpg",
@@ -477,6 +492,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "finisher",
+    essential: true,
     variantGroup: "calf-raise",
     notes: "Good option when the calf machine's taken",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Calf_Press_On_The_Leg_Press_Machine/0.jpg",
@@ -492,6 +508,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "finisher",
+    essential: true,
     variantGroup: "calf-raise",
     notes: "Bent-knee — hits the soleus, which standing raises miss",
     imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Calf_Raise/0.jpg",
@@ -507,6 +524,7 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     unit: "reps",
     category: "strength",
     section: "finisher",
+    essential: true,
     variantGroup: "calf-raise",
     notes: "Progression once double-leg raises feel easy — also shows side-to-side gaps",
     areasTrained: ["Calves"],
@@ -541,6 +559,19 @@ export const DEFAULT_EXERCISES: Exercise[] = [
     areasTrained: ["Legs", "cardio"],
     howTo:
       "Flat ground, comfortable pace.\n\n• Watch for: hills or uneven ground if the knee's cranky — flat, predictable footing is the point today.\n• If the knee feels fine, this is a good way to fill a recovery day without loading it.",
+  },
+  {
+    id: "stair-climbing",
+    name: "Stair climbing (stairmaster or real stairs)",
+    defaultSets: 1,
+    defaultReps: "8-12",
+    unit: "minutes",
+    category: "recovery",
+    variantGroup: "recovery-cardio",
+    notes: "Standard mid-rehab gait/stair-tolerance drill once normal walking is back",
+    areasTrained: ["Quads", "glutes", "cardio"],
+    howTo:
+      "Stairmaster, or a real staircase repeated. Start with short steps, moderate pace.\n\n• Watch for: hyperextending the knee at the top of each step — keep a soft knee throughout.\n• Progress: longer duration or taller steps once this feels easy, well before adding incline/resistance elsewhere.",
   },
   {
     id: "foam-rolling",
@@ -645,6 +676,11 @@ export function migrateExercises(stored: Exercise[]): Exercise[] {
     if (ex.areasTrained === undefined && def.areasTrained !== undefined) patch.areasTrained = def.areasTrained;
     if (ex.mainFocus === undefined && def.mainFocus !== undefined) patch.mainFocus = def.mainFocus;
     if (ex.defaultSide === undefined && def.defaultSide !== undefined) patch.defaultSide = def.defaultSide;
+    // archived is otherwise user-controlled (Plan page toggle), but an
+    // exercise the user never touched has it undefined in storage too —
+    // safe to backfill a newly-archived-by-default seed exercise once.
+    if (ex.archived === undefined && def.archived !== undefined) patch.archived = def.archived;
+    if (ex.essential === undefined && def.essential !== undefined) patch.essential = def.essential;
 
     if (Object.keys(patch).length === 0) return ex;
     changed = true;
